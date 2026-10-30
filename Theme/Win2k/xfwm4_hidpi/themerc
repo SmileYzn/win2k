@@ -1,0 +1,60 @@
+# Name: Win2k xfwm4 Theme
+# Author: Grassmunk
+# License: GPL-3.0+
+# Changed slightly from Redmond to allow for a 
+# Rewritten 2020 to match whats happening in Windows 95 
+
+#activetitle
+active_color_1=#0A246A
+active_color_2=#0A246A
+
+#inactivetitle
+inactive_color_1=#808080
+inactive_color_2=#808080
+
+#activetext
+active_text_color=#ffffff
+
+#inactivetext
+inactive_text_color=#D4D0C8
+
+#buttonface
+active_mid_1=#D4D0C8
+inactive_mid_1=#D4D0C8
+
+#buttonLight
+active_hilight_1=#D4D0C8
+inactive_hilight_1=#D4D0C8
+
+#buttonhilight
+active_hilight_2=#ffffff
+inactive_hilight_2=#ffffff
+
+#activeborder
+active_border_color=#D4D0C8
+inactive_border_color=#D4D0C8
+
+#buttonShadow
+active_shadow_2=#808080
+inactive_shadow_2=#808080
+
+#buttonDKShadow
+active_shadow_1=#000000
+inactive_shadow_1=#000000
+
+#buttontext
+active_mid_2=#000000
+inactive_mid_2=#000000
+
+button_layout=O|HMC
+button_offset=2
+button_spacing=0
+full_width_title=true
+maximized_offset=2
+show_app_icon=true
+title_alignment=left
+title_horizontal_offset=2
+title_vertical_offset_active=1
+title_vertical_offset_inactive=1
+
+frame_border_top=8

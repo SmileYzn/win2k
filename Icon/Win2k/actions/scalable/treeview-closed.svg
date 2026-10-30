@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges">
+ <g fill="#000000">
+  <path fill-rule="evenodd" d="M4 3h9v9h-9z M5 4v7h7v-7z"/>
+  <rect x="6" y="7" width="5" height="1"/>
+  <rect x="8" y="5" width="1" height="5"/>
+ </g>
+</svg>

@@ -1,0 +1,10 @@
+{ 
+   "cinnamon-theme": {
+   "name": "Win2k", 
+   "author": "EMH-Mark-I", 
+   "version": "1.0",
+   "type":   "custom",
+   "thumbnail": "thumbnail.png", 
+   "url": "" 
+    }
+}

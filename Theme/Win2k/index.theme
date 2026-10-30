@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Win2k
+Type=X-GNOME-Metatheme
+Comment=Windows 2000 classic theme.
+
+[X-GNOME-Metatheme]
+GtkTheme=Win2k
+MetacityTheme=Win2k
+IconTheme=Win2k
+CursorTheme=Win2k_Cursors
+CursorSize=32

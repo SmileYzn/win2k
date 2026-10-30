@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Home Folder
+Name[pt_BR]=Pasta pessoal
+Icon=user-home
+Exec=sh -c "exo-open \\"\\$HOME\\""
+Terminal=false
+StartupNotify=true

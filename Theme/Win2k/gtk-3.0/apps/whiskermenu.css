@@ -1,0 +1,164 @@
+/* Whisker Menu and Application Menu Panel Button style */
+
+/* Every selector below goes through `> box`: the Applications Menu popup is attached to the
+   button and inherits its CSS path, so a plain `#applicationmenu-button label` would also
+   reach the labels, images and boxes inside the menu items (bold menu text, button frames). */
+
+/* We will remove the border effect and margin effects on the button and apply it to the box inside. 
+This will allow people to be able to run their pointer to the far corner of the screen and activate 
+the whisker menu without having to correct their pointer location. */
+#whiskermenu-button,
+#applicationmenu-button {
+  border: none;
+  box-shadow: none;
+  margin: 0px;
+  background-color: @bg_color; }
+  #whiskermenu-button > box,
+  #applicationmenu-button > box {
+    padding: 2px;
+    margin: 1px;
+    border: 2px solid @border_color;
+    border-image: url("../buttons/dialog_button_normal.png");
+    border-image-slice: 2 2 2 2;
+    background-color: @bg_color; }
+    #whiskermenu-button:active > box,
+    #whiskermenu-button:checked > box,
+    #applicationmenu-button:active > box,
+    #applicationmenu-button:checked > box {
+      padding-left: 3px;
+      padding-right: 1px;
+      margin: 1px;
+      border-image: url("../buttons/button_pressed.png");
+      border-image-slice: 2 2 2 2;
+      border-radius: 0px; }
+  #whiskermenu-button > box > image,
+  #applicationmenu-button > box > image {
+    padding: 0px;
+    margin-right: -1px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center; }
+  #whiskermenu-button > box > label,
+  #applicationmenu-button > box > label {
+    padding: 1px;
+    border: none;
+    font-weight: bold; }
+
+/****************
+* Whisker Menu **
+****************/
+
+#whiskermenu-window {
+  box-shadow: inset 23px 0 @whisker_menu_logo; }
+  #whiskermenu-window treeview {
+    padding-left: 2px;
+    padding-right: 5px;
+    padding-top: 1px;
+    padding-bottom: 1px; }
+  #whiskermenu-window button {
+    padding: 1px;
+    min-height: 16px;
+    min-width: 16px; }
+    #whiskermenu-window button:not(:hover):not(:checked) {
+      border-color: transparent;
+      box-shadow: none;
+      background-color: transparent; }
+  #whiskermenu-window frame border {
+    padding: 0px;
+    border: none;
+    border-image: none;
+    box-shadow: none; }
+  #whiskermenu-window scrolledwindow {
+    border: none;
+    box-shadow: none; }
+    #whiskermenu-window scrolledwindow.frame {
+      padding: 0px;
+      border: 2px solid @border_dark;
+      border-image: url("../assets/frame_inset.png");
+      border-image-slice: 2 2 2 2;
+      border-radius: 0px;
+      box-shadow: none; }
+  #whiskermenu-window scrolledwindow viewport button:hover {
+    outline-color: @border_bright; }
+  #whiskermenu-window > frame {
+    border: 2px solid @border_dark;
+    border-image: url("../assets/frame_outset.png");
+    border-image-slice: 2 2 2 2;}
+    #whiskermenu-window > frame > stack > box > box:first-child {
+      padding: 2px;
+      margin: 0;
+      color: @text_color;
+      /*background-image: linear-gradient(to right, @selected_bg_color, @transparent);*/ /* Note: You can setup a gradient here if you want! */ }
+  #whiskermenu-window frame {
+    /* Start menu side banner: the real Windows 2000 banners from explorer.exe (bitmaps 157-166),
+       21x233, black at the top fading to blue. The strip above the banner is @whisker_menu_logo
+       (gtk.css, black) so it continues seamlessly on menus taller than 233px, as Windows 2000 did.
+       Keep one background-image line and comment the others to pick another edition:
+        - branding_W2K.png                 Windows 2000 Professional (default)
+        - branding_W2K_Server.png          Windows 2000 Server
+        - branding_W2K_AdvancedServer.png  Windows 2000 Advanced Server
+        - branding_W2K_Datacenter.png      Windows 2000 Datacenter Server
+        - branding_W2K_Terminal.png        Windows 2000 Terminal
+        - branding_W2K_Embedded.png        Windows 2000 Embedded
+        - branding_W2K_Powered.png         Windows Powered */
+    /*  background-image: url("../assets/branding_W2K_Server.png"); */
+    /*  background-image: url("../assets/branding_W2K_AdvancedServer.png"); */
+    /*  background-image: url("../assets/branding_W2K_Datacenter.png"); */
+    /*  background-image: url("../assets/branding_W2K_Terminal.png"); */
+    /*  background-image: url("../assets/branding_W2K_Embedded.png"); */
+    /*  background-image: url("../assets/branding_W2K_Powered.png"); */
+    background-image: url("../assets/branding_W2K.png");
+    background-repeat: no-repeat;
+    background-position: 0% 100%; }
+    #whiskermenu-window frame > stack,
+    #whiskermenu-window frame > box { /* frame > box is for older versions of Whisker menu. */
+      margin-left: 18px; }
+    #whiskermenu-window frame scrolledwindow button {
+      border: 1px solid transparent;
+      background-color: @selected_bg_color;
+      box-shadow: none; }
+      #whiskermenu-window frame scrolledwindow button:checked {
+      background-color: @border_shade; }
+      #whiskermenu-window frame scrolledwindow button:hover,
+      #whiskermenu-window frame scrolledwindow button:active,
+      #whiskermenu-window frame scrolledwindow button:checked {
+        color: white; }
+    #whiskermenu-window frame > box > box > box button image {
+      padding: 0px; }
+  #whiskermenu-window entry {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    min-height: 16px; }
+  #whiskermenu-window scrollbar button {
+    margin: 0px;
+    padding: 0px;
+    min-width: 16px;
+    min-height: 16px;
+    border: none;
+    box-shadow: none; }
+  #whiskermenu-window frame, #whiskermenu-window GtkListBox, #whiskermenu-window scrolledwindow, #whiskermenu-window viewport {
+    background-color: transparent; }
+
+/*****************************************
+* Application Menu as a Windows 2000 Start menu
+*****************************************/
+
+/* The classic Xfce "Applications Menu" plugin, with Menu/win2k-start.menu as its custom menu
+   file, laid out like the Windows 2000 Start menu. The popup menu is attached to the panel
+   button, so it inherits the button's CSS path: `#applicationmenu-button > window > menu` is the
+   top-level menu only, while submenus hang off a menuitem and are not matched.
+   The side banner is the same Windows 2000 Professional banner as the Whisker Menu, anchored at
+   the bottom, with the strip above it in the banner's top colour (@whisker_menu_logo). */
+#applicationmenu-button > window > menu {
+  padding-left: 21px;
+  background-image: url("../assets/branding_W2K.png"),
+                    linear-gradient(@whisker_menu_logo, @whisker_menu_logo);
+  background-repeat: no-repeat, no-repeat;
+  background-position: left bottom, left top;
+  background-size: 21px 233px, 21px 100%; }
+  /* Windows 2000 top-level Start menu items are 32px tall (32px icons). GTK3 cannot size menu
+     icons per menu from CSS, so the 16px icons stay, but the rows keep the Windows 2000
+     height, which also makes the menu taller than the 233px banner, as it was. */
+  #applicationmenu-button > window > menu > menuitem {
+    padding-top: 8px;
+    padding-bottom: 8px; }

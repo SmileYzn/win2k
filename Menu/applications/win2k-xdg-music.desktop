@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Music
+Name[pt_BR]=Músicas
+Icon=folder-music
+Exec=sh -c "exo-open \\"\\$(xdg-user-dir MUSIC)\\""
+Terminal=false
+StartupNotify=true

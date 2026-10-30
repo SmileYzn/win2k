@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Taskbar & Start Menu
+Name[pt_BR]=Barra de tarefas e menu Iniciar
+Icon=xfce4-panel
+Exec=xfce4-panel --preferences
+Terminal=false
+StartupNotify=true

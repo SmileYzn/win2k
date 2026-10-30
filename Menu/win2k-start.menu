@@ -1,0 +1,224 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+  "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+<!--
+  Windows 2000 Start menu for the Xfce "Applications Menu" panel plugin
+  (Properties > "Use custom menu file").
+
+  Top level, in the Windows 2000 order:
+      favourites  |  Programs >  Documents >  Settings >  Search >  Help  Run...  |  Log Off...  Shut Down...
+  The favourites (the Xfce preferred web browser, mail reader, file manager and terminal, the
+  same defaults as the Whisker Menu favourites, plus Galculator and Mousepad) take the
+  place of "Windows Update" at the top.
+  "Programs" holds the usual Xfce application categories (same rules as
+  /etc/xdg/menus/xfce-applications.menu). The favourites are only listed at the
+  top level, not repeated at the end of "Programs".
+
+  The launchers for the Start menu's own commands live in ./applications and
+  ./desktop-directories, next to this file, so they appear only in this menu.
+  Relative <AppDir>/<DirectoryDir> paths resolve against this file's folder.
+-->
+<Menu>
+    <Name>Win2kStart</Name>
+    <DefaultAppDirs/>
+    <DefaultDirectoryDirs/>
+    <AppDir>applications</AppDir>
+    <DirectoryDir>desktop-directories</DirectoryDir>
+
+    <Layout>
+        <Filename>xfce4-web-browser.desktop</Filename>
+        <Filename>xfce4-mail-reader.desktop</Filename>
+        <Filename>xfce4-file-manager.desktop</Filename>
+        <Filename>xfce4-terminal-emulator.desktop</Filename>
+        <Filename>galculator.desktop</Filename>
+        <Filename>org.xfce.mousepad.desktop</Filename>
+        <Separator/>
+        <Menuname>Programs</Menuname>
+        <Menuname>Documents</Menuname>
+        <Menuname>Settings</Menuname>
+        <Menuname>Search</Menuname>
+        <Filename>win2k-help.desktop</Filename>
+        <Filename>win2k-run.desktop</Filename>
+        <Separator/>
+        <Filename>win2k-logoff.desktop</Filename>
+        <Filename>win2k-shutdown.desktop</Filename>
+    </Layout>
+    <Include>
+        <Filename>xfce4-web-browser.desktop</Filename>
+        <Filename>xfce4-mail-reader.desktop</Filename>
+        <Filename>xfce4-file-manager.desktop</Filename>
+        <Filename>xfce4-terminal-emulator.desktop</Filename>
+        <Filename>galculator.desktop</Filename>
+        <Filename>org.xfce.mousepad.desktop</Filename>
+        <Filename>win2k-help.desktop</Filename>
+        <Filename>win2k-run.desktop</Filename>
+        <Filename>win2k-logoff.desktop</Filename>
+        <Filename>win2k-shutdown.desktop</Filename>
+    </Include>
+
+    <!-- Programs -->
+    <Menu>
+        <Name>Programs</Name>
+        <Directory>win2k-programs.directory</Directory>
+
+        <Menu>
+            <Name>Accessories</Name>
+            <Directory>xfce-accessories.directory</Directory>
+            <Include>
+                <Or>
+                    <Category>Accessibility</Category>
+                    <Category>Core</Category>
+                    <Category>Legacy</Category>
+                    <Category>Utility</Category>
+                </Or>
+            </Include>
+            <Exclude>
+                <Or>
+                    <Filename>xfce4-file-manager.desktop</Filename>
+                    <Filename>xfce4-terminal-emulator.desktop</Filename>
+                    <Filename>xfce4-about.desktop</Filename>
+                    <Filename>xfce4-run.desktop</Filename>
+                    <Filename>galculator.desktop</Filename>
+                    <Filename>org.xfce.mousepad.desktop</Filename>
+                </Or>
+            </Exclude>
+        </Menu>
+        <Menu>
+            <Name>Development</Name>
+            <Directory>xfce-development.directory</Directory>
+            <Include><Category>Development</Category></Include>
+        </Menu>
+        <Menu>
+            <Name>Education</Name>
+            <Directory>xfce-education.directory</Directory>
+            <Include><Category>Education</Category></Include>
+        </Menu>
+        <Menu>
+            <Name>Games</Name>
+            <Directory>xfce-games.directory</Directory>
+            <Include><Category>Game</Category></Include>
+        </Menu>
+        <Menu>
+            <Name>Graphics</Name>
+            <Directory>xfce-graphics.directory</Directory>
+            <Include><Category>Graphics</Category></Include>
+        </Menu>
+        <Menu>
+            <Name>Multimedia</Name>
+            <Directory>xfce-multimedia.directory</Directory>
+            <Include>
+                <Category>Audio</Category>
+                <Category>Video</Category>
+                <Category>AudioVideo</Category>
+            </Include>
+        </Menu>
+        <Menu>
+            <Name>Network</Name>
+            <Directory>xfce-network.directory</Directory>
+            <Include><Category>Network</Category></Include>
+            <Exclude>
+                <Or>
+                    <Filename>xfce4-mail-reader.desktop</Filename>
+                    <Filename>xfce4-web-browser.desktop</Filename>
+                </Or>
+            </Exclude>
+        </Menu>
+        <Menu>
+            <Name>Office</Name>
+            <Directory>xfce-office.directory</Directory>
+            <Include><Category>Office</Category></Include>
+        </Menu>
+        <Menu>
+            <Name>Science</Name>
+            <Directory>xfce-science.directory</Directory>
+            <Include><Category>Science</Category></Include>
+        </Menu>
+        <Menu>
+            <Name>System</Name>
+            <Directory>xfce-system.directory</Directory>
+            <Include>
+                <Or>
+                    <Category>Emulator</Category>
+                    <Category>System</Category>
+                </Or>
+            </Include>
+            <Exclude>
+                <Or>
+                    <Filename>xfce4-session-logout.desktop</Filename>
+                </Or>
+            </Exclude>
+        </Menu>
+        <!-- Xfce's own settings dialogs belong to the Control Panel, not to "Other". -->
+        <Menu>
+            <Name>Other</Name>
+            <Directory>xfce-other.directory</Directory>
+            <OnlyUnallocated/>
+            <Include><All/></Include>
+            <Exclude>
+                <Or>
+                    <Category>Settings</Category>
+                    <Category>X-XFCE-SettingsDialog</Category>
+                    <Category>Screensaver</Category>
+                    <Filename>xfce4-about.desktop</Filename>
+                    <Filename>xfce4-run.desktop</Filename>
+                    <Filename>xfce4-session-logout.desktop</Filename>
+                </Or>
+            </Exclude>
+        </Menu>
+    </Menu>
+
+    <!-- Documents: home folder, the XDG user folders (xdg-user-dir) and recent files -->
+    <Menu>
+        <Name>Documents</Name>
+        <Directory>win2k-documents.directory</Directory>
+        <Layout>
+            <Filename>win2k-documents.desktop</Filename>
+            <Separator/>
+            <Filename>win2k-xdg-desktop.desktop</Filename>
+            <Filename>win2k-xdg-documents.desktop</Filename>
+            <Filename>win2k-xdg-download.desktop</Filename>
+            <Filename>win2k-xdg-pictures.desktop</Filename>
+            <Filename>win2k-xdg-music.desktop</Filename>
+            <Filename>win2k-xdg-videos.desktop</Filename>
+            <Separator/>
+            <Filename>win2k-recent.desktop</Filename>
+        </Layout>
+        <Include>
+            <Filename>win2k-documents.desktop</Filename>
+            <Filename>win2k-xdg-desktop.desktop</Filename>
+            <Filename>win2k-xdg-documents.desktop</Filename>
+            <Filename>win2k-xdg-download.desktop</Filename>
+            <Filename>win2k-xdg-pictures.desktop</Filename>
+            <Filename>win2k-xdg-music.desktop</Filename>
+            <Filename>win2k-xdg-videos.desktop</Filename>
+            <Filename>win2k-recent.desktop</Filename>
+        </Include>
+    </Menu>
+
+    <!-- Settings -->
+    <Menu>
+        <Name>Settings</Name>
+        <Directory>win2k-settings.directory</Directory>
+        <Layout>
+            <Filename>win2k-control-panel.desktop</Filename>
+            <Filename>win2k-taskbar.desktop</Filename>
+        </Layout>
+        <Include>
+            <Filename>win2k-control-panel.desktop</Filename>
+            <Filename>win2k-taskbar.desktop</Filename>
+        </Include>
+    </Menu>
+
+    <!-- Search -->
+    <Menu>
+        <Name>Search</Name>
+        <Directory>win2k-search.directory</Directory>
+        <Layout>
+            <Filename>win2k-search-files.desktop</Filename>
+            <Filename>win2k-search-web.desktop</Filename>
+        </Layout>
+        <Include>
+            <Filename>win2k-search-files.desktop</Filename>
+            <Filename>win2k-search-web.desktop</Filename>
+        </Include>
+    </Menu>
+</Menu>

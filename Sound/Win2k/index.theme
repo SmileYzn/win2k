@@ -1,0 +1,10 @@
+[Sound Theme]
+Name=Win2k
+Name[pt_BR]=Win2k
+Comment=Windows 2000 sound scheme ("Windows Default")
+Comment[pt_BR]=Esquema de sons do Windows 2000 ("Padrão do Windows")
+Inherits=freedesktop
+Directories=stereo
+
+[stereo]
+OutputProfile=stereo

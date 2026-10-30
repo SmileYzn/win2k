@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=For Files or Folders...
+Name[pt_BR]=Arquivos ou pastas...
+Icon=system-search
+Exec=catfish
+Terminal=false
+StartupNotify=true

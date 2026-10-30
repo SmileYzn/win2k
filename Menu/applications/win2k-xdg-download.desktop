@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Downloads
+Name[pt_BR]=Downloads
+Icon=folder-download
+Exec=sh -c "exo-open \\"\\$(xdg-user-dir DOWNLOAD)\\""
+Terminal=false
+StartupNotify=true

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Recent Documents
+Name[pt_BR]=Documentos recentes
+Icon=document-open-recent
+Exec=thunar recent:///
+Terminal=false
+StartupNotify=true

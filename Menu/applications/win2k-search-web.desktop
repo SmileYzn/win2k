@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=On the Internet...
+Name[pt_BR]=Na Internet...
+Icon=web-browser
+Exec=exo-open --launch WebBrowser
+Terminal=false
+StartupNotify=true

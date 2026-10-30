@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Control Panel
+Name[pt_BR]=Painel de controle
+Icon=preferences-system
+Exec=xfce4-settings-manager
+Terminal=false
+StartupNotify=true

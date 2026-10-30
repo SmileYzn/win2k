@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Windows 2000 Logon Sound
+Name[pt_BR]=Som de logon do Windows 2000
+Comment=Plays the sound theme's login sound (only when event sounds are enabled)
+Comment[pt_BR]=Toca o som de login do tema de sons (só com os sons de eventos habilitados)
+Exec=canberra-gtk-play -i desktop-login -d "Windows Logon"
+OnlyShowIn=XFCE;
+NoDisplay=true
+Terminal=false

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Pictures
+Name[pt_BR]=Imagens
+Icon=folder-pictures
+Exec=sh -c "exo-open \\"\\$(xdg-user-dir PICTURES)\\""
+Terminal=false
+StartupNotify=true

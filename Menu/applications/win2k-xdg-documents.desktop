@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Documents
+Name[pt_BR]=Documentos
+Icon=folder-documents
+Exec=sh -c "exo-open \\"\\$(xdg-user-dir DOCUMENTS)\\""
+Terminal=false
+StartupNotify=true

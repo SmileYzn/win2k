@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Videos
+Name[pt_BR]=Vídeos
+Icon=folder-videos
+Exec=sh -c "exo-open \\"\\$(xdg-user-dir VIDEOS)\\""
+Terminal=false
+StartupNotify=true

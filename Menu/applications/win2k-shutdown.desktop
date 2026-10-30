@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Shut Down...
+Name[pt_BR]=Desligar...
+Icon=system-shutdown
+Exec=sh -c "canberra-gtk-play -i desktop-logout -d Logoff & exec xfce4-session-logout"
+Terminal=false
+StartupNotify=true

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Run...
+Name[pt_BR]=Executar...
+Icon=system-run
+Exec=xfce4-appfinder --collapsed
+Terminal=false
+StartupNotify=true

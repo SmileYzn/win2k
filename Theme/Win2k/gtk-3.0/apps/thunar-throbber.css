@@ -1,0 +1,54 @@
+/* Windows 2000 Explorer brand animation, from browseui.dll (bitmap 306: 41 frames of 22x22).
+   Frame 0 is the still Windows logo (shown while idle by the status_badge_w2k.png background in
+   thunar.css, which is the same image); frames 1-40 are the spinning globe shown while a
+   location is loading. Optional: imported from thunar.css when the badge block there is
+   uncommented. */
+@keyframes throbber {
+  2.5% { -gtk-icon-source: url("../assets/throbber/throbber_f1.png"); }
+  5% { -gtk-icon-source: url("../assets/throbber/throbber_f2.png"); }
+  7.5% { -gtk-icon-source: url("../assets/throbber/throbber_f3.png"); }
+  10% { -gtk-icon-source: url("../assets/throbber/throbber_f4.png"); }
+  12.5% { -gtk-icon-source: url("../assets/throbber/throbber_f5.png"); }
+  15% { -gtk-icon-source: url("../assets/throbber/throbber_f6.png"); }
+  17.5% { -gtk-icon-source: url("../assets/throbber/throbber_f7.png"); }
+  20% { -gtk-icon-source: url("../assets/throbber/throbber_f8.png"); }
+  22.5% { -gtk-icon-source: url("../assets/throbber/throbber_f9.png"); }
+  25% { -gtk-icon-source: url("../assets/throbber/throbber_f10.png"); }
+  27.5% { -gtk-icon-source: url("../assets/throbber/throbber_f11.png"); }
+  30% { -gtk-icon-source: url("../assets/throbber/throbber_f12.png"); }
+  32.5% { -gtk-icon-source: url("../assets/throbber/throbber_f13.png"); }
+  35% { -gtk-icon-source: url("../assets/throbber/throbber_f14.png"); }
+  37.5% { -gtk-icon-source: url("../assets/throbber/throbber_f15.png"); }
+  40% { -gtk-icon-source: url("../assets/throbber/throbber_f16.png"); }
+  42.5% { -gtk-icon-source: url("../assets/throbber/throbber_f17.png"); }
+  45% { -gtk-icon-source: url("../assets/throbber/throbber_f18.png"); }
+  47.5% { -gtk-icon-source: url("../assets/throbber/throbber_f19.png"); }
+  50% { -gtk-icon-source: url("../assets/throbber/throbber_f20.png"); }
+  52.5% { -gtk-icon-source: url("../assets/throbber/throbber_f21.png"); }
+  55% { -gtk-icon-source: url("../assets/throbber/throbber_f22.png"); }
+  57.5% { -gtk-icon-source: url("../assets/throbber/throbber_f23.png"); }
+  60% { -gtk-icon-source: url("../assets/throbber/throbber_f24.png"); }
+  62.5% { -gtk-icon-source: url("../assets/throbber/throbber_f25.png"); }
+  65% { -gtk-icon-source: url("../assets/throbber/throbber_f26.png"); }
+  67.5% { -gtk-icon-source: url("../assets/throbber/throbber_f27.png"); }
+  70% { -gtk-icon-source: url("../assets/throbber/throbber_f28.png"); }
+  72.5% { -gtk-icon-source: url("../assets/throbber/throbber_f29.png"); }
+  75% { -gtk-icon-source: url("../assets/throbber/throbber_f30.png"); }
+  77.5% { -gtk-icon-source: url("../assets/throbber/throbber_f31.png"); }
+  80% { -gtk-icon-source: url("../assets/throbber/throbber_f32.png"); }
+  82.5% { -gtk-icon-source: url("../assets/throbber/throbber_f33.png"); }
+  85% { -gtk-icon-source: url("../assets/throbber/throbber_f34.png"); }
+  87.5% { -gtk-icon-source: url("../assets/throbber/throbber_f35.png"); }
+  90% { -gtk-icon-source: url("../assets/throbber/throbber_f36.png"); }
+  92.5% { -gtk-icon-source: url("../assets/throbber/throbber_f37.png"); }
+  95% { -gtk-icon-source: url("../assets/throbber/throbber_f38.png"); }
+  97.5% { -gtk-icon-source: url("../assets/throbber/throbber_f39.png"); }
+  100% { -gtk-icon-source: url("../assets/throbber/throbber_f40.png"); }
+}
+.thunar menubar menuitem spinner:checked {
+  opacity: 1;
+  margin-left: -1px;
+  margin-top: -1px;
+  animation: throbber 4s steps(40) infinite; }
+.thunar menubar menuitem spinner:checked:disabled {
+  opacity: 1; }

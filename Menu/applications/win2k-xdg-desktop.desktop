@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Desktop
+Name[pt_BR]=Área de trabalho
+Icon=user-desktop
+Exec=sh -c "exo-open \\"\\$(xdg-user-dir DESKTOP)\\""
+Terminal=false
+StartupNotify=true

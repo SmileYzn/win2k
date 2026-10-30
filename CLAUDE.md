@@ -1,0 +1,64 @@
+# Win2k — tema Windows 2000 para XFCE
+
+Tema completo (GTK 2/3/4, xfwm4, ícones, cursores, sons, menu Iniciar, painel) derivado do
+Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
+
+## Idioma e estilo
+
+- Responder ao usuário em português do Brasil.
+- Textos de interface (instalador, menu, ferramentas): pt-BR, com `Name[pt_BR]` nos `.desktop`.
+- Comentários: seguir o arquivo. CSS e `.menu` estão em inglês; os scripts Python, em português.
+- CSS GTK3 do tema: indentação de 2 espaços, seletores relacionados empilhados (ver as notas no topo de cada arquivo).
+
+## Estrutura
+
+| Pasta | Conteúdo |
+|---|---|
+| `Theme/Win2k` | `gtk-2.0`, `gtk-3.0` (+ links `gtk-3.22`, `gtk-3.24`), `gtk-4.0`, `xfwm4`, `xfwm4_hidpi`, `openbox-3`, `metacity-1`, `cinnamon`, `gnome-shell`, `xfce-notify-4.0` |
+| `Icon/Win2k` | Pacote de ícones (~32 mil PNGs, ~25 mil links). `icones.html` é gerado por `tools/icon-gallery.py` |
+| `Cursor/Win2k_Cursors` | Cursores |
+| `Sound/Win2k` | Tema de sons freedesktop (`stereo/*.wav`) + `win2k-logon-sound.desktop` (autostart) |
+| `Wallpaper/Win2k` | Papéis de parede |
+| `Menu` | `win2k-start.menu` (plugin "Menu de aplicativos"), `applications/`, `desktop-directories/`, `win2k-logoff.py` |
+| `Panel/win2k.tar.bz2` | Perfil do xfce4-panel-profiles |
+| `Setup` | `win2k-installer.py` (assistente + CLI) e imagens do assistente |
+| `tools` | `win2k-sounds.py` (testador de sons), `icon-gallery.py` |
+| `Screenshots` | Capturas usadas no README |
+
+## Instalador (`Setup/win2k-installer.py`)
+
+- `SRC` é a raiz do projeto (o script fica em `Setup/`).
+- `COMPONENTS` define origem e destino de cada componente nos modos `user` e `system`. Para um componente novo, basta acrescentar uma entrada ali.
+- Modo sistema: o próprio script é chamado de novo com `pkexec ... --root install|uninstall <comps>`. O lado root só aceita nomes de `COMPONENTS` e destinos fixos. Não aceitar caminhos vindos da linha de comando.
+- "Aplicar" grava pelo `xfconf-query` e guarda o valor anterior em `~/.local/share/win2k-installer/state.json`. A desinstalação restaura esses valores, o `~/.config/gtk-4.0` e o painel salvo.
+- No modo usuário, `fix_menu_paths` troca `/usr/share/win2k-menu` pelo destino real nos `.desktop` do menu.
+- A janela força o tema e os ícones do projeto (`use_project_theme`: links `Win2k-Setup` num diretório temporário + `GTK_THEME`). Os subprocessos recebem `CHILD_ENV`, o ambiente original.
+- GTK 3: sempre `gi.require_version("Gdk", "3.0")` junto com o Gtk, senão o Gdk 4 é carregado.
+
+## Armadilhas conhecidas
+
+- **Apps libadwaita/GTK 4** só leem o tema em `~/.config/gtk-4.0`. Depois de mexer em `gtk-4.0`, sincronizar com `cp -r Theme/Win2k/gtk-4.0/. ~/.config/gtk-4.0/`. O instalador faz isso ao aplicar o tema.
+- **gtk-4.0 é independente**: os assets ficam em `gtk-4.0/assets` (não referenciar `../gtk-3.0`).
+- **Menus de contexto** herdam o CSS do widget que os abre (fonte monoespaçada do editor). Por isso existe `font: initial` em `menu`/`.context-menu` (GTK 3) e em `popover.background` (GTK 4).
+- **Painel XFCE**: o widget do plugin (`#separator-N`, `#showdesktop-N`) não desenha nada, então a estilização vai nos filhos (`> box`, `#showdesktop-button`). Os IDs de plugin variam com o layout; os hacks ficam em `gtk-3.0/apps/xfce-panel-hacks.css`.
+- **Separadores do painel**: os estilos "separador" e "alça" do xfce4-panel são desenhados em cairo e não aceitam tema. A alça Win2k vem de `assets/panel-handle*.png` via `border-image`.
+- **Menu Iniciar**: o painel monitora o arquivo `.menu`. Se ele sumir por alguns segundos, aparece "Falha ao carregar o menu de aplicativos". Apagar e copiar em sequência e reiniciar o painel depois.
+- **xfwm4**: o degradê da barra de título usa `title-*-stretch.png` (2048 px). O Openbox só aceita `.xbm`.
+- **Cursor errado em apps Java**: `XCURSOR_THEME` em `/etc/environment` ou `~/.profile` tem prioridade.
+- **Thunar 4.20**: a seleção arredondada vem do próprio Thunar (`/misc-highlighting-enabled`), não do tema.
+- `Icon/Win2k` tem cerca de 100 links quebrados herdados do SE98.
+
+## Testes sem mexer no sistema do usuário
+
+- O assistente não tem sudo. Instalação no sistema: o usuário roda `python3 Setup/win2k-installer.py --system`.
+- **Nunca** usar `pkill -f` (casa com o próprio shell); matar pelos PIDs.
+- Capturas: nunca da tela real do usuário (ela tem dados pessoais). Usar só a janela de teste.
+- Janelas GTK isoladas: `Xephyr :5 -screen 1024x768 -ac` + `env -u DBUS_SESSION_BUS_ADDRESS DISPLAY=:5`. Cliques e teclas via XTest (`ctypes` com `libXtst`), já que não há xdotool nem wmctrl. Posicionar janelas com `Wnck` num processo novo a cada vez.
+- Tema do projeto sem instalar: link `themes/Win2k` → `Theme/Win2k` num diretório colocado no começo do `XDG_DATA_DIRS`, + `GTK_THEME=Win2k`.
+- Sessão XFCE completa isolada (para capturas): `dbus-run-session` com `XDG_CONFIG_HOME`/`HOME` de demonstração (cópias dos canais xfconf) rodando xfsettingsd, xfwm4, xfdesktop e xfce4-panel no Xephyr. Para caminho e usuário genéricos: `unshare --user --map-root-user --mount --uts`, tmpfs em `/home`, bind de `/home/usuario` e de um `/etc/passwd` falso, depois `unshare --user --map-user=1000 --map-group=1000`.
+- Tela de login: `lightdm --test-mode --config <conf>` dentro desse namespace, com um `Xephyr` intermediário no `PATH` para definir `-screen`.
+- Instalador sem efeitos reais: `HOME` falso + `xfconf-query`, `xfce4-panel` e `xfce4-panel-profiles` falsos no `PATH`.
+
+## Recursos da Microsoft
+
+Sons, cursores, imagens do Setup (`Setup/*.png`) e faixas do menu foram extraídos de uma ISO do Windows 2000. São da Microsoft. Não acrescentar outros sem avisar o usuário.
