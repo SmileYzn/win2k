@@ -6,6 +6,8 @@ de tarefas, além de um instalador gráfico no estilo do Setup do Windows 2000.
 
 ![Área de trabalho com o menu Iniciar aberto](Screenshots/02-menu-iniciar.png)
 
+📖 **Documentação completa no [wiki](https://github.com/SmileYzn/win2k/wiki)**: instalação, componentes, problemas conhecidos e desenvolvimento.
+
 ## Capturas de tela
 
 | | |
