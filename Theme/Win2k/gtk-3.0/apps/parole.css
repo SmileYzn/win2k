@@ -1,0 +1,20 @@
+/**********
+ * Parole *
+ **********/
+
+/*Contributor notes:
+Please use two space indentions.
+Stack all related and child selectors and selector states into a logical hierarchy to a readable degree.
+Make sure that all changes made here are part of the Parole application.
+*/
+
+/* Control bar under the video. Parole tags it ".background.osd"; the buttons stretch to
+   the height of the row (27px) but keep their icon width (17px), so give them a matching
+   minimum width. Layout: control > media_controls > (ltrbox > prev/play/next) and the
+   volume, fullscreen and playlist buttons. */
+.background.osd > box > box > button,
+.background.osd > box > button {
+  min-width: 26px; }
+  .background.osd > box > button.scale {
+    padding-left: 0px;
+    padding-right: 0px; }
