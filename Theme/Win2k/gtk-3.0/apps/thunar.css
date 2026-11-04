@@ -101,3 +101,13 @@ Make sure that all changes made here are part of the Thunar application.
   .thunar widget.view:selected:focus {
     background-color: @selected_bg_color; }
 
+
+/* File operation progress dialog: the pause/stop buttons fill the height of the two text
+   lines (43px with the default font). Center them as 24x24 squares. The dialog has no
+   name or style class, so match its layout: icon, text box, buttons. The second selector
+   is the scrolled layout used when several jobs run at once. */
+window > box > box > box > box > box > image + box ~ button.image-button.flat,
+viewport > box > box > box > box > image + box ~ button.image-button.flat {
+  min-width: 22px;
+  margin-top: 9px;
+  margin-bottom: 10px; }
