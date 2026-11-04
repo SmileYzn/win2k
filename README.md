@@ -109,3 +109,9 @@ anteriores do XFCE (tema, ícones, cursor, sons, papel de parede, menu, painel e
   Windows 2000. **Windows** e **Windows 2000** são marcas da Microsoft Corporation, e esses
   recursos pertencem a ela. Este projeto não tem afiliação com a Microsoft e é distribuído
   apenas para fins de preservação e personalização, sem fins comerciais.
+
+## Licença
+
+O projeto é distribuído sob a [GPL-3.0-or-later](LICENSE), a mesma do Chicago95. O pacote de
+ícones (`Icon/Win2k`) mantém a licença do SE98, a [GPL-2.0](Icon/Win2k/LICENSE). Os recursos
+do Windows 2000 citados acima pertencem à Microsoft e não são cobertos por essas licenças.

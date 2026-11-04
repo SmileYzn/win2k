@@ -15,7 +15,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 | Pasta | Conteúdo |
 |---|---|
 | `Theme/Win2k` | `gtk-2.0`, `gtk-3.0` (+ links `gtk-3.22`, `gtk-3.24`), `gtk-4.0`, `xfwm4`, `xfwm4_hidpi`, `openbox-3`, `metacity-1`, `cinnamon`, `gnome-shell`, `xfce-notify-4.0` |
-| `Icon/Win2k` | Pacote de ícones (~32 mil PNGs, ~25 mil links). `icones.html` é gerado por `tools/icon-gallery.py` |
+| `Icon/Win2k` | Pacote de ícones (~32 mil PNGs, ~25 mil links), GPL-2.0 (`Icon/Win2k/LICENSE`). `icones.html` é gerado por `tools/icon-gallery.py` |
 | `Cursor/Win2k_Cursors` | Cursores |
 | `Sound/Win2k` | Tema de sons freedesktop (`stereo/*.wav`) + `win2k-logon-sound.desktop` (autostart) |
 | `Wallpaper/Win2k` | Papéis de parede |
@@ -46,7 +46,6 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 - **xfwm4**: o degradê da barra de título usa `title-*-stretch.png` (2048 px). O Openbox só aceita `.xbm`.
 - **Cursor errado em apps Java**: `XCURSOR_THEME` em `/etc/environment` ou `~/.profile` tem prioridade.
 - **Thunar 4.20**: a seleção arredondada vem do próprio Thunar (`/misc-highlighting-enabled`), não do tema.
-- `Icon/Win2k` tem cerca de 100 links quebrados herdados do SE98.
 
 ## Testes sem mexer no sistema do usuário
 
