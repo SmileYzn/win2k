@@ -23,7 +23,7 @@
    diff-comparable with the GTK3 sheet.
 
    Every rule that resets an Adwaita default says so, because otherwise a maintainer reading
-   this later cannot tell an intentional Win95 metric from a defensive override.
+   this later cannot tell an intentional Win2k metric from a defensive override.
 */
 
 /**********
@@ -46,7 +46,7 @@ window.messagedialog {
   text-shadow: none;
   outline-color: @outline_color; }
   window.csd {
-    /* Adwaita puts a large soft drop shadow here for elevation. Win95 windows have none. */
+    /* Adwaita puts a large soft drop shadow here for elevation. Win2k windows have none. */
     box-shadow: none; }
   /* The Win2k window frame on a client-side decorated window (headerbar apps such as
      gnome-calculator): the same 6x6 asset GTK3 uses for `window decoration`, i.e. a 2px raised
@@ -58,7 +58,7 @@ window.messagedialog {
     padding: 2px; }
   window.solid-csd {
     /* When the compositor is not drawing a shadow, GTK asks the theme for the whole frame.
-       This is the one place a real Win95 window border can still be reproduced, so build it as
+       This is the one place a real Win2k window border can still be reproduced, so build it as
        the standard raised outset: 1px real border (outer ring) plus 1px inset (inner ring). */
     margin: 0;
     padding: 0;
@@ -92,7 +92,7 @@ windowhandle {
 /* Focused CSD titlebar. In GTK4 `.titlebar` is a style class, not a node, and `headerbar` is
    the node - so both are listed. min-height 22px is derived from the GTK3 look: an 18x18
    titlebutton plus its 2px top and 2px bottom margins. Without it Adwaita's ~47px default
-   applies and the bar reads as a modern GNOME header rather than a Win95 title bar. */
+   applies and the bar reads as a modern GNOME header rather than a Win2k title bar. */
 headerbar,
 .titlebar,
 .titlebar:not(headerbar) {
@@ -233,7 +233,7 @@ headerbar,
   headerbar .title,
   headerbar windowtitle > .title,
   windowtitle > .title {
-    /* Only the title is bold on Win95, never the whole bar. */
+    /* Only the title is bold on Win2k, never the whole bar. */
     padding: 0 4px;
     margin: 0;
     font-weight: bold;
@@ -284,7 +284,7 @@ headerbar:backdrop,
    it matters far more than its GTK3 equivalent ever did - it is what mutter-x11-frames uses.
    That is a plain GTK4 process (no libadwaita) which draws the server-side decorations for
    every Xwayland window on this system, so styling it here is what gives legacy X11 apps a
-   Win95 title bar. It reads the theme directory through the gtk-theme setting like any other
+   Win2k title bar. It reads the theme directory through the gtk-theme setting like any other
    non-libadwaita GTK4 app. */
 headerbar.default-decoration {
   min-height: 22px;
@@ -304,7 +304,7 @@ headerbar.default-decoration {
     color: @inactive_title_text_color; }
   headerbar.default-decoration windowcontrols > button,
   headerbar.default-decoration windowcontrols > button > image {
-    /* Adwaita shrinks the buttons to 22x22/16x16 in the compact bar; keep the 18x18 Win95
+    /* Adwaita shrinks the buttons to 22x22/16x16 in the compact bar; keep the 18x18 Win2k
        square so an Xwayland frame matches a native CSD one. */
     min-width: 18px;
     min-height: 18px;
@@ -375,7 +375,7 @@ windowcontrols {
     windowcontrols > button:hover,
     windowcontrols > button:backdrop,
     windowcontrols > button:backdrop:hover {
-      /* Win95 window buttons are inert: no hover tint, and they keep their bevel on backdrop
+      /* Win2k window buttons are inert: no hover tint, and they keep their bevel on backdrop
          while the bar behind them goes grey. Restated in full because Adwaita recolours both
          states and would otherwise win on the background alone. */
       border-top-color: @border_bright;
@@ -390,7 +390,7 @@ windowcontrols {
     windowcontrols > button:checked,
     windowcontrols > button.keyboard-activating {
       /* Pressed: the bevel inverts and the inner ring is a single top/left shadow only - that
-         asymmetry is what makes it read as Win95 rather than as a mirrored raised button.
+         asymmetry is what makes it read as Win2k rather than as a mirrored raised button.
          `.keyboard-activating` is a GTK4-only state Adwaita uses alongside :active. */
       padding: 0;
       border-top-color: @border_dark;
@@ -402,7 +402,7 @@ windowcontrols {
       background-image: none;
       color: @fg_color; }
     windowcontrols > button:focus:focus-visible {
-      /* The Win95 dotted focus rectangle. outline-style: dotted does render as dots in
+      /* The Win2k dotted focus rectangle. outline-style: dotted does render as dots in
          GTK 4.22 - libgtk-4 still has a real dashed-stroke path - but at 18x18 with a -4px
          offset there are only a few pixels of ring left, so this is a close approximation of
          the original rather than a match. */
@@ -432,7 +432,7 @@ windowcontrols {
     -gtk-icon-style: symbolic;
     color: @fg_color; }
   windowcontrols > button.close {
-    /* Win95 leaves a small gap before the close button and groups minimise/maximise flush.
+    /* Win2k leaves a small gap before the close button and groups minimise/maximise flush.
        With border-spacing zeroed above, one explicit margin is enough. */
     margin-left: 2px; }
 
@@ -508,14 +508,14 @@ notebook > header > tabs > tab {
   font-weight: normal;
   transition: none; }
   notebook > header > tabs > tab:hover {
-    /* Win95 tabs do not light up on hover; keep the face and only follow the theme's own
+    /* Win2k tabs do not light up on hover; keep the face and only follow the theme's own
        notebook hover colour, which resolves to the same grey. */
     background-color: @notebook_bg_hover;
     background-image: none;
     box-shadow: inset 1px 1px @border_light, inset -1px -1px @border_shade; }
   notebook > header > tabs > tab:checked {
     /* Adwaita marks the selected tab with an inset accent underline; replace it with the
-       Win95 behaviour - the tab grows and bleeds into the page border.
+       Win2k behaviour - the tab grows and bleeds into the page border.
        There is deliberately no `border-color: @bg_dark` shorthand here. gtk-3.0's
        notebook tab:checked rule carries one, but only ever in company with the
        border-image asset, where the flat colour never paints. Written asset-free it does
@@ -645,7 +645,7 @@ stackswitcher {
     outline: 0 solid transparent;
     transition: none; }
     stackswitcher > button:checked {
-      /* The Win95 latched-toggle look: pressed bevel over the 50% dither. The tile and the
+      /* The Win2k latched-toggle look: pressed bevel over the 50% dither. The tile and the
          deliberate text-shadow are copied from gtk-3.0/gtk-buttons.css - upstream's comment
          says the shadow is what keeps the label readable against the checkerboard. */
       border-style: solid;
@@ -716,7 +716,7 @@ paned > separator.wide {
  *************/
 
 /* NOT ACHIEVABLE IN GTK4 - read this before looking for the arrow buttons.
-   A Win95 scrollbar has a stepper button with a triangle arrow at each end. GtkScrollbar in
+   A Win2k scrollbar has a stepper button with a triangle arrow at each end. GtkScrollbar in
    GTK 4.22 has no stepper node at all: the tree is `scrollbar > range > trough > slider` and
    nothing else, so there is no node to attach a button, a bevel or an arrow bitmap to. The
    twelve scrollbar/stepper-*.png assets and the whole stepper half of
@@ -731,8 +731,9 @@ paned > separator.wide {
    sandbox: the theme-dir settings.ini is genuinely read (gtk-primary-button-warps-slider
    flips), yet gtk-overlay-scrolling stays TRUE while the GNOME source is present, and
    putting the same key in ~/.config/gtk-4.0/settings.ini does not help either. So on
-   GNOME the user has to set it themselves; INSTALL.md gives the gsettings command. The
-   opacity override below is what keeps the bar fully drawn in the meantime. */
+   GNOME the user has to set it themselves; the wiki (Problemas conhecidos) gives the
+   gsettings command. The opacity override below is what keeps the bar fully drawn in the
+   meantime. */
 scrollbar {
   border: none;
   border-radius: 0;
@@ -751,7 +752,7 @@ scrollbar {
   scrollbar.horizontal {
     min-height: 16px; }
   scrollbar.overlay-indicator:not(.dragging):not(.hovering) {
-    /* Adwaita fades the bar to a thin indicator until pointed at. Win95 scrollbars are always
+    /* Adwaita fades the bar to a thin indicator until pointed at. Win2k scrollbars are always
        fully drawn. */
     opacity: 1; }
   scrollbar > range {
@@ -760,7 +761,7 @@ scrollbar {
     border: none;
     background-color: transparent; }
     scrollbar > range > trough {
-      /* The 50% dither Win95 channel, verbatim from gtk-3.0/gtk-basic-effects.css. These are
+      /* The 50% dither Win2k channel, verbatim from gtk-3.0/gtk-basic-effects.css. These are
          hard-stop gradients used as a 2px repeating checker tile, not shading, so they do not
          breach the no-smooth-gradients rule. The odd trailing @bg_dark stop on the second
          gradient is an upstream quirk - it is sub-pixel at a 2px tile and invisible, and
@@ -779,7 +780,7 @@ scrollbar {
       scrollbar > range > trough > slider:active,
       scrollbar.dragging > range > trough > slider,
       scrollbar > range > trough > slider:backdrop {
-        /* The thumb, repeated across every state because Win95 thumbs are inert and Adwaita
+        /* The thumb, repeated across every state because Win2k thumbs are inert and Adwaita
            recolours them on hover and drag. Adwaita also ships min-width 8px, margin -1px,
            a 4px transparent border, border-radius 10px and background-clip: padding-box - all
            four have to be restated, not just overridden in part.
@@ -805,7 +806,7 @@ scrollbar {
         outline: none;
         transition: none; }
       scrollbar > range > trough > slider:disabled {
-        /* An unusable scrollbar is all dither and no thumb on Win95. */
+        /* An unusable scrollbar is all dither and no thumb on Win2k. */
         border: none;
         box-shadow: none;
         background-color: @scrollbar_trough_bg_color;
@@ -856,7 +857,7 @@ scrolledwindow {
   scrolledwindow > overshoot.left,
   scrolledwindow > overshoot.right {
     /* libadwaita draws a soft fade at each scroll edge (32 undershoot rules) plus a coloured
-       glow when you overscroll. Both are pure GNOME-era decoration with no Win95 analogue, so
+       glow when you overscroll. Both are pure GNOME-era decoration with no Win2k analogue, so
        they are blanked rather than restyled. */
     border: none;
     box-shadow: none;
@@ -994,7 +995,7 @@ frame.view {
     /* Upstream pulls the content out under the 2px border so the list fills the well. */
     margin: -2px; }
 
-/* The Win95 group box is an etched groove rather than a plain inset, and that is the border a
+/* The Win2k group box is an etched groove rather than a plain inset, and that is the border a
    stack page or a preferences-style panel wants. Colour order is the decoded pixel structure
    of assets/frame_groove.png. */
 stack > box > frame,
@@ -1058,7 +1059,7 @@ viewport {
 
 /* A plain 1-line separator inside a box. GTK4/Adwaita draws separators as a 1px background
    image rather than as a border, so background-image and both min sizes have to be zeroed
-   before the two-tone Win95 groove shows up at all. Scoped to `box > separator` on purpose: a
+   before the two-tone Win2k groove shows up at all. Scoped to `box > separator` on purpose: a
    bare `separator` rule would also hit the separators inside popovers, toolbars, paned and
    split buttons, which are styled by their own owners. */
 box > separator.horizontal {

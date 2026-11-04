@@ -33,7 +33,7 @@
  * Buttons *
  ***********/
 
-/* Basic buttons. This is the raised-outset Win95 face: 1px real border for the outer
+/* Basic buttons. This is the raised-outset Win2k face: 1px real border for the outer
    ring (white top/left, black bottom/right) plus a 1px inset box-shadow for the inner
    ring (#D4D0C8 top/left, #808080 bottom/right). Two rings, never border-width: 2px --
    a 2px solid border paints 2px of a single colour and destroys the bevel. */
@@ -60,7 +60,7 @@ splitbutton > button {
   outline: 0 solid transparent;
   outline-color: @outline_color;
   transition: none; }
-  /* Win95 buttons do not light up on hover; the face is inert until it is pressed.
+  /* Win2k buttons do not light up on hover; the face is inert until it is pressed.
      GTK3 used `-gtk-icon-effect: highlight` here, which is a hard parse error in
      GTK 4.22 -- the documented replacement is -gtk-icon-filter. */
   button:hover,
@@ -70,7 +70,7 @@ splitbutton > button {
     background-image: none;
     color: @button_text_color;
     -gtk-icon-filter: brightness(1.2); }
-  /* Pressed / toggled down. Note the asymmetry that makes this read as Win95 rather
+  /* Pressed / toggled down. Note the asymmetry that makes this read as Win2k rather
      than as a mirrored raised button: the inner ring is a SINGLE inset on top/left,
      with no inner bottom/right highlight. `.keyboard-activating` is a GTK4-only state
      libadwaita raises alongside :active. Win2k does not shift the label on press,
@@ -118,7 +118,7 @@ splitbutton > button {
     background-color: @button_bg_color;
     background-image: none;
     box-shadow: inset 1px 1px @border_light, inset -1px -1px @border_shade; }
-  /* The Win95 dotted focus rectangle, inset 4px from the bevel. outline-style: dotted
+  /* The Win2k dotted focus rectangle, inset 4px from the bevel. outline-style: dotted
      and outline-offset both parse and render in GTK 4.22 (libgtk-4 still uses
      cairo_set_dash for non-solid strokes), so this really is dots, not a solid line.
      GTK4's convention is :focus:focus-visible rather than GTK3's bare :focus. */
@@ -134,7 +134,7 @@ splitbutton > button {
     padding: 0;
     margin: 0; }
 
-/* Flat buttons. Win2k has no .flat concept, but Win95's own flat-toolbar style is
+/* Flat buttons. Windows 2000 has no .flat concept, but its own flat-toolbar style is
    the right period analogue: no bevel at rest, a thin raised bevel on hover, a thin
    pressed bevel when held. The 1px transparent border is pre-reserved so hovering
    never reflows the label.
@@ -183,7 +183,7 @@ splitbutton.flat > menubutton > button {
     box-shadow: inset 1px 1px @border_shade;
     background-color: @button_bg_color;
     background-image: none; }
-  /* A latched flat toggle gets the 50% dither, the way a pressed Win95 toolbar button
+  /* A latched flat toggle gets the 50% dither, the way a pressed Win2k toolbar button
      does. These are hard-stop gradients used as a 2px repeating checker tile, not
      shading, so they do not violate the no-smooth-gradients rule. The text-shadow is
      load-bearing: it keeps the label readable against the checkerboard. */
@@ -206,7 +206,7 @@ splitbutton.flat > menubutton > button {
     button.toggle:checked > label {
       text-shadow: 1px 1px @bg_color; }
 
-/* Suggested action / default push button. In Win95 the default button in a dialog is a
+/* Suggested action / default push button. In Win2k the default button in a dialog is a
    raised button wrapped in a 1px hard black rectangle.
    APPROXIMATION, flagged as such: GTK3 draws this with a 3px border-image
    (buttons/dialog_button_focus.png), whose rings are #000000, then #ffffff top-left /
@@ -262,7 +262,7 @@ button.destructive-action {
     box-shadow: inset 1px 1px @border_shade;
     background-color: @error_color; }
 
-/* .pill and .circular are pure libadwaita shapes with no Win95 analogue. They keep the
+/* .pill and .circular are pure libadwaita shapes with no Win2k analogue. They keep the
    ordinary raised bevel and lose their radius entirely -- Win2k is square everywhere. */
 button.pill {
   border-radius: 0;
@@ -292,7 +292,7 @@ button.osd {
   color: @osd_fg; }
 
 /* Linked button groups. Adwaita fuses a .linked box into one rounded pill by zeroing
-   the inner borders and radii; Win95 has no such grouping, so every member keeps its
+   the inner borders and radii; Win2k has no such grouping, so every member keeps its
    own complete bevel. */
 .linked > button,
 .linked > menubutton > button,
@@ -353,7 +353,7 @@ editablelabel.editing {
   text-shadow: none;
   outline: 0 solid transparent;
   transition: none; }
-  /* Win95 edit fields do not change appearance on focus or hover -- only the caret
+  /* Win2k edit fields do not change appearance on focus or hover -- only the caret
      moves in. Restate the resting look so Adwaita's focus recolour cannot apply. */
   entry:focus,
   entry:focus-within,
@@ -545,11 +545,11 @@ checkbutton.selection-mode > check {
  * switch *
  **********/
 
-/* Windows 95 HAS NO SWITCH -- there is no period-correct control to copy, so this is a
+/* Windows 2000 HAS NO SWITCH -- there is no period-correct control to copy, so this is a
    deliberate invention rather than a reproduction, and it is flagged as such. It is
    built from parts that ARE period-correct: the switch node becomes a small sunken well
    (the scrollbar/entry groove) and the slider becomes a raised square button face, so a
-   switch reads as a two-position Win95 slider rather than as a rounded iOS toggle.
+   switch reads as a two-position Win2k slider rather than as a rounded iOS toggle.
    Metrics from gtk-widgets.css:365-370 and gtk-basic-effects.css:55-62 -- note this well
    uses `inset -1px -1px @border_color` (#D4D0C8) for the inner bottom/right rather than
    @border_light, which is the upstream variant for entry/switch/scale trough.
@@ -574,7 +574,7 @@ switch {
   outline: 0 solid transparent;
   transition: none; }
   /* Win2k does not signal "on" with colour -- the raised slider having travelled to
-     the other end of the well is the whole indication, exactly as a Win95 scrollbar
+     the other end of the well is the whole indication, exactly as a Win2k scrollbar
      thumb reads. */
   switch:checked {
     background-color: @bg_bright;
@@ -610,7 +610,7 @@ switch {
       background-color: @bg_color;
       background-image: none;
       box-shadow: inset 1px 1px @border_light, inset -1px -1px @border_shade; }
-  /* libadwaita 1.9 puts a check/dash glyph inside the switch. There is no Win95
+  /* libadwaita 1.9 puts a check/dash glyph inside the switch. There is no Win2k
      equivalent, and it would draw over the knob, so it is suppressed. */
   switch > image {
     -gtk-icon-source: none;
@@ -707,7 +707,7 @@ scale > trough {
     outline-width: 1px;
     outline-color: @outline_color;
     outline-offset: 8px; }
-  /* A Win95 trackbar has no filled portion; the channel is uniform end to end. */
+  /* A Win2k trackbar has no filled portion; the channel is uniform end to end. */
   scale > trough > highlight,
   scale > trough > fill {
     /* `border: none` matters as much as the transparent background. Both stock sheets
@@ -731,7 +731,7 @@ scale > trough {
     background-image: none; }
 
 /* The slider. Border colours are per-side literals here because they mirror the
-   Win95 thumb exactly: white top/left, black bottom/right, one inner grey shadow. */
+   Win2k thumb exactly: white top/left, black bottom/right, one inner grey shadow. */
 scale > trough > slider {
   border-style: solid;
   border-width: 1px;
@@ -762,7 +762,7 @@ scale > trough > slider {
    itself and that padding is deliberately dropped above, so the same numbers here
    resolve to `1px + 2px border - 22px margin = -19px` and GTK 4.22 rejects them with
    "reported min height -19, but sizes must be >= 0" (GTK3 clamped it silently).
-   So the thumb is given its true Windows 95 trackbar size instead - 11x21px - and the
+   So the thumb is given its true Windows 2000 trackbar size instead - 11x21px - and the
    margin is only as negative as it can be while the result stays >= 0 and still <= the
    4px trough, so the trough keeps deciding the channel height:
      21px + 2px border - 20px margin = 3px, and 3px <= 4px trough.  */
@@ -787,7 +787,7 @@ scale.vertical {
     min-height: 11px;
     margin: 0 -10px 0 -10px; }
 
-/* Tick marks. Win95 trackbar ticks are 1px hard dark rules. GTK3 sized these through
+/* Tick marks. Win2k trackbar ticks are 1px hard dark rules. GTK3 sized these through
    `indicator` padding to fake the layout; GTK4 lays the marks node out itself, so only
    the tick size and colour are set here and the GTK3 padding is deliberately dropped. */
 scale > marks > indicator {
@@ -853,7 +853,7 @@ progressbar.vertical > trough > progress,
 levelbar.vertical > trough {
   min-width: 14px; }
 
-/* SEGMENTED FILL. A real Windows 95 progress bar is a row of navy blocks with a 2px
+/* SEGMENTED FILL. A real Windows 2000 progress bar is a row of navy blocks with a 2px
    gap, not a continuous bar. That IS reproducible in GTK4 CSS: a single hard-stop
    linear-gradient tiled by background-size / background-repeat gives 8px of navy
    followed by 2px of trough grey, repeating. No repeating-linear-gradient and no
@@ -862,14 +862,14 @@ levelbar.vertical > trough {
    declaration the bar degrades to the solid navy fill, never to an empty bar.
    The one thing this cannot do is align the block grid to the bar's own left edge
    independently of the fill width, so at some widths the final block is clipped
-   mid-block instead of ending flush -- Win95 always ended on a whole block. There is no
+   mid-block instead of ending flush -- Win2k always ended on a whole block. There is no
    way to express "integer number of blocks" in CSS, so the clipped edge is accepted. */
 /* `margin: 0` is load-bearing, not tidiness. GTK's builtin Default theme ships
    `progressbar.horizontal > trough > progress { margin: 0 -1px }` (and `-1px 0` for
    the vertical case) so that the fill bleeds over the trough's 1px border. Dropping
    the border here without also dropping that margin leaves `0 - 2px = -2px`, and GTK
    4.22 rejects it: "(progress) reported min width -2, but sizes must be >= 0". The
-   Win95 fill sits inside the sunken groove rather than over it, so 0 is also the
+   Win2k fill sits inside the sunken groove rather than over it, so 0 is also the
    correct look. Only plain-GTK4 apps hit this - libadwaita has no such margin - which
    is why it shows up in gtk4-widget-factory but not in adwaita-1-demo. */
 progressbar > trough > progress {
@@ -933,7 +933,7 @@ levelbar.horizontal.discrete > trough > block {
  *************/
 
 /* The degenerate 1px etched rule: one grey leg and one white leg, which together read
-   as the Win95 groove. Adwaita draws separators as a 1px background *image* on a node
+   as the Win2k groove. Adwaita draws separators as a 1px background *image* on a node
    with a min-size, so min-width/min-height and background-image must both be cleared
    or the border never shows. */
 separator {
@@ -1022,7 +1022,7 @@ image:disabled {
  * link *
  ********/
 
-/* Win95's hot-tracking colour is the same navy as the selection, and links are
+/* Win2k's hot-tracking colour is navy like the selection, and links are
    underlined. GTK4 exposes links as the :link / :visited pseudo-classes on whatever
    node carries the text, plus button.link for GtkLinkButton. */
 *:link,
@@ -1072,7 +1072,7 @@ button.link {
  * spinner *
  ***********/
 
-/* The Windows 95 hourglass, and the ONE animation Win2k keeps. gtk.css kills
+/* The Windows 2000 hourglass, and the ONE animation Win2k keeps. gtk.css kills
    `animation` on `*` and on all seven state variants, so this section is what makes the
    claim in that file's motion comment true; if you delete it, delete the comment too.
    How it wins: gtk.css and the partials all load in one provider, imported rules cascade

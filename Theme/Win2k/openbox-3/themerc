@@ -4,7 +4,7 @@
 #
 # This theme matches the look of the Win2k xfwm4 theme so that title bars
 # on Wayland (via labwc) and on Openbox sessions render with the classic
-# Windows 95 navy-blue active title and grey inactive title.
+# Windows 2000 navy-to-blue gradient active title and grey gradient inactive title.
 #
 # labwc looks for themes in <theme>/labwc/ first and falls back to
 # <theme>/openbox-3/, so this directory is picked up automatically by labwc
@@ -12,8 +12,8 @@
 
 # --- General -----------------------------------------------------------------
 # Border width of 3 gives us a grey window frame around the contents, which
-# matches the Win95 outer-bevel look. labwc only supports a single colour for
-# the window border, so we use the Win95 chrome grey #D4D0C8.
+# matches the Win2k outer-bevel look. labwc only supports a single colour for
+# the window border, so we use the Win2k chrome grey #D4D0C8.
 border.width: 3
 padding.width: 2
 padding.height: 2

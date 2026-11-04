@@ -2,7 +2,8 @@
 # Author: Grassmunk
 # License: GPL-3.0+
 # Changed slightly from Redmond to allow for a 
-# Rewritten 2020 to match whats happening in Windows 95 
+# Rewritten 2020 to match whats happening in Windows 95 (Chicago95)
+# Adapted to Windows 2000: gradient title bars and #D4D0C8 frame
 
 #activetitle
 active_color_1=#0A246A

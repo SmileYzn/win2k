@@ -3,7 +3,7 @@
   # author: AdrianoML (rewrite/gtk 3.22 update)
   # author: EMH-Mark-I (rewrite/gtk 3.22/3.24 update)
   # date: February 7th, 2018
-  # description: A Windows 95 classic theme for XFCE4 - GTK 4.22 / libadwaita 1.9 port. */
+  # description: A Windows 2000 classic theme for XFCE4, based on Chicago95 - GTK 4.22 / libadwaita 1.9 port. */
 
 /* This is the keystone sheet for the GTK4 side of Win2k. It carries the palette,
    the global resets, and nothing else - every widget rule lives in one of the five
@@ -32,7 +32,7 @@
    and the omission is deliberate rather than an oversight: in GTK4 the painted node
    is popover > contents, the shadow would have to be re-hung on a node that also
    owns the menu's 2px outset ring, and a rounded popover is the single loudest
-   non-Win95 detail left in an Adwaita app. Win2k GTK4 is square everywhere. If a
+   non-Win2k detail left in an Adwaita app. Win2k GTK4 is square everywhere. If a
    future maintainer wants Clippy back, put it on popover.background > contents in
    gtk-menus.css, not here. */
 
@@ -49,7 +49,7 @@
    gtk-3.0/ and gtk-4.0/ unchanged and so that third-party app CSS keeps working. Do not
    go looking for var(--w2k-*) in the partials; there is none, and that is deliberate.
    Consequently some tokens below are a documented palette rather than a live reference -
-   they exist so the Windows 95 system-colour mapping is recorded in one table. Values are
+   they exist so the Windows 2000 system-colour mapping is recorded in one table. Values are
    verbatim from the GTK3 sheet with shade()/alpha() pre-resolved: GTK 4.22 deprecates
    both functions and neither can see a custom property. */
 :root {
@@ -96,7 +96,7 @@
 
    DELIBERATE DECISION - there is no dark variant. libadwaita re-declares all of these
    inside @media (prefers-color-scheme: dark) and @media (prefers-contrast: more).
-   Win2k is a LIGHT theme and has exactly one look: Windows 95 had no dark mode, and
+   Win2k is a LIGHT theme and has exactly one look: Windows 2000 had no dark mode, and
    half of the palette (the white/grey/black bevel rings) carries structural meaning that
    inverts into nonsense. So the values below are declared unconditionally on bare :root,
    and then repeated verbatim inside the dark and high-contrast queries so that a user
@@ -114,7 +114,7 @@
   --view-fg-color: var(--w2k-text);
 
   /* Headerbar. libadwaita's light default is flush white; Win2k's focused CSD
-     titlebar is the Win95 navy, and its backdrop is the flat inactivetitle grey. Both
+     titlebar is the activetitle navy, and its backdrop is the flat inactivetitle grey. Both
      shade colours go fully transparent - they exist only to fake soft elevation. */
   --headerbar-bg-color: var(--w2k-selected-bg);
   --headerbar-fg-color: var(--w2k-selected-fg);
@@ -135,7 +135,7 @@
   --secondary-sidebar-border-color: var(--w2k-border-shade);
   --secondary-sidebar-shade-color: var(--w2k-transparent);
 
-  /* Cards and boxed lists. Win95 group boxes are the button face, not a white sheet. */
+  /* Cards and boxed lists. Win2k group boxes are the button face, not a white sheet. */
   --card-bg-color: var(--w2k-face);
   --card-fg-color: var(--w2k-fg);
   --card-shade-color: var(--w2k-transparent);
@@ -159,7 +159,7 @@
   /* The 1px ring libadwaita draws round an overlay scrollbar slider */
   --scrollbar-outline-color: var(--w2k-border-shade);
 
-  /* Accent = the Win95 navy hilight. --accent-color must be set by hand: libadwaita
+  /* Accent = the Win2k navy hilight. --accent-color must be set by hand: libadwaita
      derives it as oklab(from var(--accent-bg-color) var(--standalone-color-oklab)),
      and the dark-scheme recipe max(l, 0.85) turns navy into lilac. Measured: navy in,
      rgb(200,126,200) out. Same trap for all five standalone colours below. */
@@ -181,12 +181,12 @@
 
   /* Pin the derivation recipe to the identity transform as a belt-and-braces measure,
      so anything libadwaita derives that we have not listed stays on-palette instead of
-     being lightened or darkened into a colour Windows 95 never had. */
+     being lightened or darkened into a colour Windows 2000 never had. */
   --standalone-color-oklab: l a b;
 
   /* Borders. libadwaita's --border-color is currentColor-relative
      (color-mix(in srgb, currentColor var(--border-opacity), transparent)), which is why
-     a hard Win95 #808080 rule needs an explicit colour here and not just an opacity
+     a hard Win2k #808080 rule needs an explicit colour here and not just an opacity
      tweak. --border-opacity goes to 100% so nothing translucent survives. */
   --border-color: var(--w2k-border-shade);
   --border-opacity: 100%;
@@ -199,7 +199,7 @@
   --disabled-opacity: 100%;
 
   /* The single highest-impact non-colour variable: 15px by default, and the reason an
-     Adw window stops looking like Win95 the moment you see its corners. */
+     Adw window stops looking like Win2k the moment you see its corners. */
   --window-radius: 0;
 
   /* Selected toggle in a toggle-group / AdwInlineViewSwitcher. Custom-property only -
@@ -227,7 +227,7 @@
   --accent-slate: var(--w2k-selected-bg);
   --accent-brown: var(--w2k-selected-bg);
 
-  /* The neutral half of the 45-swatch GNOME palette, remapped onto the Win95 greys.
+  /* The neutral half of the 45-swatch GNOME palette, remapped onto the Win2k greys.
      The chromatic ramps (--blue-1..5, --green-1..5, --yellow-1..5, --orange-1..5,
      --red-1..5, --purple-1..5, --brown-1..5) are deliberately left at their stock
      values: libadwaita's own widget rules do not read them, they are an app-facing
@@ -307,7 +307,7 @@
     --overview-fg-color: var(--w2k-fg);
     --banner-color: var(--w2k-face); } }
 
-/* high contrast - same again. Windows 95's own bevels are already a hard 4-tone
+/* high contrast - same again. Windows 2000's own bevels are already a hard 4-tone
    black/white/grey scheme, so prefers-contrast: more has nothing left to add and
    libadwaita's version of it (50% border opacity, 90% dim) only muddies ours. */
 @media (prefers-contrast: more) {
@@ -390,7 +390,7 @@
 @define-color success_color #53d013;
 /* NAME COLLISION, resolved in Win2k's favour. libadwaita means @warning_bg_color /
    @error_bg_color as saturated semantic surfaces (#e5a50a / #e01b24); Win2k has used
-   those exact two names since it was written for the pale Win95 infobar tints
+   those exact two names since it was written for the pale Win2k infobar tints
    (gtk-3.0/gtk.css:79 #FFEDCC and :82 #FFCCCC), and gtk-menus.css consumes them for
    infobar.warning / infobar.error. The Win2k meaning wins here because it is the only
    one anything in this theme reads: libadwaita's own warning and error surfaces resolve
@@ -519,7 +519,7 @@
 /* misc colors used by gtk+.
    This block is the sole owner of warning_fg_color and error_fg_color - see the note in
    the libadwaita block above. Both are #000000 because gtk-3.0/gtk.css:78 and :82 define
-   them as @fg_color: a Win95 infobar draws black text on its pale tint, never white. */
+   them as @fg_color: a Win2k infobar draws black text on its pale tint, never white. */
 @define-color info_fg_color #000000;
 @define-color info_bg_color #ffffe1;
 @define-color warning_fg_color #000000;
@@ -543,7 +543,7 @@
  **********************/
 
 /* Everything below is structural, not per-widget: it removes the three things that make
-   an Adwaita app unmistakably not Windows 95 - rounded corners, soft elevation, and
+   an Adwaita app unmistakably not Windows 2000 - rounded corners, soft elevation, and
    motion - across every node at once. Provider priority beats selector specificity in
    GTK4 (measured: a bare `label` rule at PRIORITY_USER beats a five-class chain at
    PRIORITY_THEME), so these short selectors defeat libadwaita's long ones, and the
@@ -560,7 +560,7 @@
    transparent border act as inset spacing - listview > row, bare row, calendar,
    .app-notification, window.print paper and the popover.touch-selection / .magnifier /
    .osd family - and forcing border-box on all of them at PRIORITY_USER lets the
-   background bleed into that border box for no Win95 gain. The three nodes in this theme
+   background bleed into that border box for no Win2k gain. The three nodes in this theme
    that genuinely need border-box state it themselves: the scrollbar slider
    (gtk-containers.css), popover > contents and tooltip (gtk-menus.css). */
 /* NOT ACHIEVABLE AS WRITTEN, and the substitution matters: the GTK3 `*` rule also
@@ -581,7 +581,7 @@
   outline: 0 solid transparent;
   outline-offset: 0; }
 
-/* Corners. Win95 had no rounded anything, and libadwaita rounds a lot of it: 5px on
+/* Corners. Win2k had no rounded anything, and libadwaita rounds a lot of it: 5px on
    buttons and entries, 8px on frames, 9px on popover contents, 12px on cards and boxed
    lists, and --window-radius (15px) on the window itself, its dialogs and its bottom
    sheets. The `*` rule above already zeroes the property everywhere; these are the nodes
@@ -609,7 +609,7 @@ tabthumbnail .card,
 .keycap {
   border-radius: 0; }
 
-/* Elevation. Every libadwaita drop shadow is a lie about depth that Win95 told with two
+/* Elevation. Every libadwaita drop shadow is a lie about depth that Win2k told with two
    pixels of border instead, and the *_shade_color variables above have already been made
    transparent so the gradient-based ones render as nothing. These are the nodes that
    carry a literal box-shadow. Note this rule removes shadows only - it must never set a
@@ -639,7 +639,7 @@ toolbarview > .bottom-bar {
 
 /* The soft-transition decoration nodes. AdwNavigationView and AdwOverlaySplitView paint
    dedicated shadow/dimming/border children that have no GTK3 equivalent at all; there is
-   nothing to translate them into, so they are blanked. Windows 95 had no page
+   nothing to translate them into, so they are blanked. Windows 2000 had no page
    transitions to shade. */
 navigation-view > shadow,
 navigation-view > dimming,
@@ -666,7 +666,7 @@ scrolledwindow > overshoot.right {
    `animation: none` is here as well as `transition: none`, and it has to be: both stock
    sheets drive GtkSpinner purely from CSS (`spinner:checked { animation: spin 1s linear
    infinite }`, GTK Default-light.css:102 and adw gtk.css:2495), and libadwaita pulses a
-   needs-attention badge from @keyframes needs_attention. Neither has a Win95 analogue.
+   needs-attention badge from @keyframes needs_attention. Neither has a Win2k analogue.
    The one animation Win2k keeps IS the 16-frame hourglass spinner, and it is really
    implemented: gtk-widgets.css declares @keyframes w2k-hglass and re-enables it on
    `spinner:checked`. That works because the partials are imported below this point in the
@@ -691,7 +691,7 @@ scrolledwindow > overshoot.right {
 
 /* Focus. libadwaita's animated ring is already dead: the zero-width transparent outline
    in the universal reset above takes the base state, and the motion rules take the
-   300ms outline transition. The actual Win95 focus rectangle - 1px dotted #000000 at
+   300ms outline transition. The actual Win2k focus rectangle - 1px dotted #000000 at
    outline-offset -4px - is applied per widget in gtk-widgets.css, because it has to be
    excluded from treeview/columnview/listview/gridview/view/checkbutton/radiobutton
    (upstream's comment on that exclusion is emphatic: an outline on a treeview causes
@@ -700,7 +700,7 @@ scrolledwindow > overshoot.right {
    PARTIALLY UNACHIEVABLE, and worth knowing before anyone "fixes" it: outline-style:
    dotted and outline-offset both parse and render as real dots on GTK 4.22.4 - libgtk-4
    still stroke-dashes non-solid outlines - so the focus rectangle itself is faithful.
-   What cannot be reproduced is Win95's *placement* on some GTK4 nodes: GTK4 derives the
+   What cannot be reproduced is Win2k's *placement* on some GTK4 nodes: GTK4 derives the
    outline path from the node's border-radius and allocation, so on nodes whose painted
    surface is a child (entry > text, scale > trough, progressbar > trough) the ring
    traces the invisible parent instead of the visible field. Where that looks wrong the
@@ -711,8 +711,8 @@ scrolledwindow > overshoot.right {
 /* Fonts.
    DELIBERATELY UNSET, and this is a metric, not an omission: there is no font-family
    anywhere in Theme/Win2k/gtk-3.0/*.css. The interface font comes from
-   XSettings/gsettings - INSTALL.md recommends the bundled bitmap Helvetica OTB (or real
-   MS Sans Serif) at 8pt - and the installer sets the xfwm4 title font separately. Naming
+   XSettings/gsettings - Tahoma or MS Sans Serif at 8pt is the period-correct choice, and
+   the xfwm4 title font is set in the xfwm4 settings. Naming
    a family here would make GTK4 apps disagree with GTK3 apps on the same desktop, which
    is a worse failure than inheriting whatever the user chose. Only three explicit sizes
    exist in the whole GTK3 tree, and every one of them is scoped to a widget rather than

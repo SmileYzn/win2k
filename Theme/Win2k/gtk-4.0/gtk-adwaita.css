@@ -22,14 +22,14 @@
    libadwaita 1.9 resolves its own rules through CSS custom properties, so the palette
    recolour in gtk.css does most of the colour work. What is left - and what this file
    is for - is the geometry: libadwaita rounds, elevates and animates almost every
-   composite, and none of that has a Windows 95 analogue.
+   composite, and none of that has a Windows 2000 analogue.
 */
 
 /* AdwToolbarView */
 
 /* AdwToolbarView is the chrome container of every modern GNOME app: it supplies the
    headerbar/content separator, and in stock libadwaita it does so with a soft shade
-   gradient. Win2k replaces that with the Win95 etched rule (one grey line above
+   gradient. Win2k replaces that with the classic etched rule (one grey line above
    one white line) and nothing else. The .toolbar-view style class is carried alongside
    the toolbarview node by some app code, so both are matched. */
 toolbarview,
@@ -51,7 +51,7 @@ toolbarview,
     color: @fg_color;
     transition: none; }
   /* .raised is libadwaita's "content has scrolled under me" state; it normally fades a
-     drop shadow in. The Win95 equivalent is a permanent etched rule, so it is drawn in
+     drop shadow in. The Win2k equivalent is a permanent etched rule, so it is drawn in
      both states and simply does not animate. */
   toolbarview > .top-bar.raised,
   toolbarview > .top-bar.raised.border,
@@ -73,7 +73,7 @@ toolbarview,
   .toolbar-view > .bottom-bar:backdrop {
     background-color: @bg_color;
     box-shadow: none; }
-  /* A toolbar strip that is not a headerbar gets the real Win95 toolbar surface. */
+  /* A toolbar strip that is not a headerbar gets the real Win2k toolbar surface. */
   toolbarview > .top-bar > .toolbar,
   toolbarview > .bottom-bar > .toolbar,
   .toolbar-view > .top-bar > .toolbar,
@@ -141,7 +141,7 @@ preferencesgroup > box {
   box-shadow: none;
   background-image: none;
   background-color: transparent; }
-  /* The group header is a Win95 group-box caption: bold, flush left, no letterspacing
+  /* The group header is a Win2k group-box caption: bold, flush left, no letterspacing
      tricks and no soft grey. */
   preferencesgroup > box > box.header:not(.single-line),
   preferencesgroup > box > box.single-line {
@@ -164,12 +164,12 @@ preferencesgroup > box {
 /* This is libadwaita's most recognisable signature and the single highest-leverage
    override in the file. Stock: a white rounded card with soft dividers, per-row corner
    rounding on the first and last child, and a drop shadow. Win2k: ONE sunken well
-   with a white field inside it, exactly like a Win95 list box, with the rows drawn flat
+   with a white field inside it, exactly like a Win2k list box, with the rows drawn flat
    inside it and a single grey rule between them.
 
    .boxed-list-separate normally detaches every row into its own floating card; here it
    is collapsed back into the same single well so the two classes look identical, which
-   is the correct Win95 answer - Windows 95 had no concept of a detached list row. */
+   is the correct Win2k answer - Windows 2000 had no concept of a detached list row. */
 list.boxed-list,
 list.boxed-list-separate {
   margin: 0;
@@ -220,7 +220,7 @@ list.boxed-list-separate {
       color: @selected_fg_color;
       text-shadow: none;
       -gtk-icon-shadow: none; }
-    /* Adwaita tints activatable rows on hover. Win95 list rows are inert until selected. */
+    /* Adwaita tints activatable rows on hover. Win2k list rows are inert until selected. */
     list.boxed-list > row.activatable:hover,
     list.boxed-list-separate > row.activatable:hover {
       background-color: transparent;
@@ -230,7 +230,7 @@ list.boxed-list-separate {
       background-color: transparent;
       background-image: none;
       box-shadow: none; }
-    /* Focus: the Win95 dotted rectangle, inset so it does not fight the row rule.
+    /* Focus: the Win2k dotted rectangle, inset so it does not fight the row rule.
        outline-style: dotted really does dash-stroke in GTK 4.22, so this is the genuine
        article rather than an approximation. */
     list.boxed-list > row:focus:focus-visible,
@@ -324,7 +324,7 @@ row .dim-label {
 
 /* .card */
 
-/* Stock .card is a white rounded panel with a drop shadow. Win95's only panel idiom is
+/* Stock .card is a white rounded panel with a drop shadow. Win2k's only panel idiom is
    the etched group box (frame_groove.png), so that is what a card becomes: 2px etched
    border over the button-grey face, square, unelevated. */
 .card {
@@ -401,8 +401,8 @@ sidebar:not(.page).empty statuspage {
 
 /* AdwAvatar */
 
-/* Windows 95 has no avatar, so this is an interpretation rather than a reproduction:
-   a square sunken picture well, which is how a bitmap was framed in a Win95 dialog.
+/* Windows 2000 has no avatar, so this is an interpretation rather than a reproduction:
+   a square sunken picture well, which is how a bitmap was framed in a Win2k dialog.
    The 14 generated-initials palettes are collapsed onto the theme's navy/white pair -
    a 16-colour theme has no room for 14 pastel backgrounds. */
 avatar {
@@ -468,7 +468,7 @@ tabbar tabbox {
     border-radius: 0;
     box-shadow: none;
     transition: none; }
-  /* The 1px filler line between tabs is not a Win95 feature - the bevels already
+  /* The 1px filler line between tabs is not a Win2k feature - the bevels already
      separate them. */
   tabbar tabbox > separator {
     background: none;
@@ -492,7 +492,7 @@ tabbar tab {
   text-shadow: none;
   outline: 0 solid transparent;
   transition: none; }
-  /* Inert on hover - Win95 tabs only respond to being selected. */
+  /* Inert on hover - Win2k tabs only respond to being selected. */
   tabbar tab:hover {
     border-image-source: url("assets/notebook_top.png");
     border-image-slice: 5 5 2 5;
@@ -579,7 +579,7 @@ tabthumbnail.pinned .card {
 
 /* AdwViewSwitcher / AdwViewSwitcherBar / AdwViewStack */
 
-/* AdwViewSwitcher is a row of toggles. In Win95 idiom that is a group of push buttons:
+/* AdwViewSwitcher is a row of toggles. In Win2k idiom that is a group of push buttons:
    raised when unselected, sunken when selected, never a rounded pill and never animated
    between the two. The bevel colours below are the same ones the buttons partial uses,
    restated because these are Adw toggle nodes rather than plain buttons. */
@@ -719,7 +719,7 @@ inline-view-switcher > toggle-group.labels > toggle {
 
 /* These three composites carry decoration-only child nodes that exist purely to fade a
    shadow in during a page transition or a sidebar reveal - `shadow`, `border` and
-   `dimming`. They have no GTK3 or Win95 equivalent whatsoever, so they are blanked. */
+   `dimming`. They have no GTK3 or Win2k equivalent whatsoever, so they are blanked. */
 navigation-view > shadow,
 navigation-view > shadow.up,
 navigation-view > shadow.down,
@@ -742,7 +742,7 @@ overlay-split-view > dimming {
   background-image: none;
   background-color: transparent;
   transition: none; }
-/* The panes themselves. Both are the button-grey face - Win95 sidebars are not tinted a
+/* The panes themselves. Both are the button-grey face - Win2k sidebars are not tinted a
    different shade from their content - separated by a single hard rule rather than by
    libadwaita's soft shade colour. */
 .sidebar-pane,
@@ -818,12 +818,12 @@ floating-sheet > sheet {
   background-color: @bg_color;
   color: @fg_color;
   transition: none; }
-/* The dimming layer behind a modal sheet is a translucent black wash. Windows 95 never
+/* The dimming layer behind a modal sheet is a translucent black wash. Windows 2000 never
    dimmed anything, and Win2k's palette has no translucency, so it is made fully
    transparent. Input still goes to the dimming node, so modality is unaffected; only the
    tint is gone. Left transparent rather than deleted because a node cannot be removed
    from CSS. NOTE the tradeoff, deliberately accepted: the sheet's own bevel then has to
-   carry the entire "this is modal" cue, which is exactly how a Win95 modal dialog worked.
+   carry the entire "this is modal" cue, which is exactly how a Win2k modal dialog worked.
    If a future maintainer wants the wash back, this is the one rule to delete.
    This is the sole owner of the node - gtk-menus.css used to declare it too. The bare
    `dimming` selector is kept last in the list so it catches any Adw composite that grows
@@ -849,7 +849,7 @@ dimming {
    produced. The duplicates are deleted there, not reconciled by hand.
 
    Toasts are pill-shaped and inherit .osd; banners tint themselves by mixing 30% of
-   --banner-color into the window background. Both become flat grey Win95 panels. */
+   --banner-color into the window background. Both become flat grey Win2k panels. */
 toast {
   padding: 2px;
   margin: 4px;
@@ -883,8 +883,8 @@ toast {
    the tree already assumed grey and only this rule disagreed: gtk.css sets
    --banner-color to var(--w2k-face) so libadwaita's own 30% mix resolves to flat face
    grey, the deleted gtk-menus.css copy said so in its comment, and a yellow strip has no
-   Win95 precedent while a grey one with an etched rule is the toolbar idiom.
-   The edge is the Win95 etched rule: the white pixel outermost, the grey pixel above it -
+   Win2k precedent while a grey one with an etched rule is the toolbar idiom.
+   The edge is the Win2k etched rule: the white pixel outermost, the grey pixel above it -
    the same two-tone rule box.toolbar uses along its top edge, mirrored. */
 banner > revealer > widget {
   padding: 3px 6px;
@@ -913,7 +913,7 @@ banner > revealer > widget {
 /* HONEST LIMITATION, stated rather than faked: AdwSpinner in libadwaita 1.9 is not drawn
    from CSS at all - it is painted in C by adw_spinner_paintable, which renders two
    rotating arcs from the accent colour. There is no CSS property that replaces that
-   paintable, so the Win95 hourglass cannot be substituted for an AdwSpinner. An AdwSpinner
+   paintable, so the Win2k hourglass cannot be substituted for an AdwSpinner. An AdwSpinner
    therefore stays a pair of navy arcs; only its size and surface are ours.
 
    A plain GtkSpinner IS the hourglass, and the implementation lives in gtk-widgets.css
@@ -932,7 +932,7 @@ statuspage.spinner spinner {
 /* .osd */
 
 /* .osd is libadwaita's floating-overlay look: translucent dark panel, big radius, drop
-   shadow, animated. All four go. Windows 95 overlays (the volume popup, a video control
+   shadow, animated. All four go. Windows 2000 overlays (the volume popup, a video control
    bar) were opaque grey panels with a raised bevel, so that is what is used - which also
    means .osd stops depending on alpha, of which the Win2k palette has none. */
 /* `box.toolbar.osd`, not `toolbar.osd`: GTK4 has no toolbar node at all - GtkToolbar was
@@ -1013,7 +1013,7 @@ indicatorbin.badge.needs-attention > indicator {
   indicatorbin > mask {
     background: none; }
 /* GtkShortcutLabel keycaps, as used by AdwShortcutsDialog. A keycap is a tiny raised
-   Win95 key, which the theme can render exactly. */
+   Win2k key, which the theme can render exactly. */
 shortcut-label .keycap,
 .keycap {
   min-width: 14px;
