@@ -50,9 +50,10 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 ## Testes sem mexer no sistema do usuário
 
 - O assistente não tem sudo. Instalação no sistema: o usuário roda `python3 Setup/win2k-installer.py --system`.
+- Se faltar uma ferramenta do sistema (xdotool, wmctrl, PIL etc.), avisar o usuário: ele instala. Não contornar em silêncio.
 - **Nunca** usar `pkill -f` (casa com o próprio shell); matar pelos PIDs.
 - Capturas: nunca da tela real do usuário (ela tem dados pessoais). Usar só a janela de teste.
-- Janelas GTK isoladas: `Xephyr :5 -screen 1024x768 -ac` + `env -u DBUS_SESSION_BUS_ADDRESS DISPLAY=:5`. Cliques e teclas via XTest (`ctypes` com `libXtst`), já que não há xdotool nem wmctrl. Posicionar janelas com `Wnck` num processo novo a cada vez.
+- Janelas GTK isoladas: `Xephyr :5 -screen 1024x768 -ac` + `env -u DBUS_SESSION_BUS_ADDRESS DISPLAY=:5`. Cliques e teclas com `xdotool`, janelas com `wmctrl` (ou `xdotool`), sempre com `DISPLAY=:5`. Medição de pixels com PIL (`python-pillow`).
 - Tema do projeto sem instalar: link `themes/Win2k` → `Theme/Win2k` num diretório colocado no começo do `XDG_DATA_DIRS`, + `GTK_THEME=Win2k`.
 - Sessão XFCE completa isolada (para capturas): `dbus-run-session` com `XDG_CONFIG_HOME`/`HOME` de demonstração (cópias dos canais xfconf) rodando xfsettingsd, xfwm4, xfdesktop e xfce4-panel no Xephyr. Para caminho e usuário genéricos: `unshare --user --map-root-user --mount --uts`, tmpfs em `/home`, bind de `/home/usuario` e de um `/etc/passwd` falso, depois `unshare --user --map-user=1000 --map-group=1000`.
 - Tela de login: `lightdm --test-mode --config <conf>` dentro desse namespace, com um `Xephyr` intermediário no `PATH` para definir `-screen`.
