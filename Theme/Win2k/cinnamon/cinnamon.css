@@ -1060,10 +1060,6 @@ StScrollBar StButton#hhandle {
 .window-list-item-demands-attention {
   border-image: url("panel-assets/button_attention.png") 6; }
 
-/*
-.window-list-item-box .progress {
-  border-image: url("panel-assets/progress.svg") 6; }*/
-
 .window-list-preview {
   border-image: url("background-assets/menu.png") 6;
   color: black;
@@ -1132,23 +1128,6 @@ StScrollBar StButton#hhandle {
 .grouped-window-list-item-demands-attention {
   border-image: url("panel-assets/button_attention.png") 6;
 }
-
-/*
-.grouped-window-list-item-box .progress {
-  border-image: url("panel-assets/progress.svg") 6;
-}
-
-.panel-top .grouped-window-list-item-box .progress {
-  border-image: url("panel-assets/progress-top.svg") 6;
-}
-
-.panel-left .grouped-window-list-item-box .progress {
-  border-image: url("panel-assets/progress-left.svg") 6;
-}
-
-.panel-right .grouped-window-list-item-box .progress {
-  border-image: url("panel-assets/progress-right.svg") 6;
-}*/
 
 .grouped-window-list-thumbnail-menu {
   color: rgb(70, 70, 70);
@@ -1282,37 +1261,11 @@ StScrollBar StButton#hhandle {
   border-color: rgba(212, 208, 200, 1);
 }
 
-/*
-.panel-top .workspace-button:hover {
-  border-image: url("panel-assets/hover-1-top.svg") 6;
-}
-
-.panel-left .workspace-button:hover {
-  border-image: url("panel-assets/hover-1-left.svg") 6;
-}
-
-.panel-right .workspace-button:hover {
-  border-image: url("panel-assets/hover-1-right.svg") 6;
-}*/
-
 .workspace-button:outlined {
   border-image: url("panel-assets/pressed.png") 6;
   background: rgba(212, 208, 200, 1);
   color: #fff;
 }
-
-/*
-.panel-top .workspace-button:outlined {
-  border-image: url("panel-assets/pressed-top.svg") 6;
-}
-
-.panel-left .workspace-button:outlined {
-  border-image: url("panel-assets/pressed-left.svg") 6;
-}
-
-.panel-right .workspace-button:outlined {
-  border-image: url("panel-assets/pressed-right.svg") 6;
-}*/
 
 /* Controls the style when using the "Visual representation" option */
 .workspace-graph {
