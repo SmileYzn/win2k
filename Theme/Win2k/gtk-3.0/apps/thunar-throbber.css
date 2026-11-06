@@ -44,7 +44,10 @@
   97.5% { -gtk-icon-source: url("../assets/throbber/throbber_f39.png"); }
   100% { -gtk-icon-source: url("../assets/throbber/throbber_f40.png"); }
 }
+/* The keyframes start at 2.5%, so the first frame drawn uses this image. Without it, the
+   generic hourglass shows up and stays there while Thunar blocks on a slow (network) folder. */
 .thunar menubar menuitem spinner:checked {
+  -gtk-icon-source: url("../assets/throbber/throbber_f1.png");
   opacity: 1;
   margin-left: -1px;
   margin-top: -1px;
