@@ -1,8 +1,7 @@
 /* Windows 2000 Explorer brand animation, from browseui.dll (bitmap 306: 41 frames of 22x22).
    Frame 0 is the still Windows logo (shown while idle by the status_badge_w2k.png background in
    thunar.css, which is the same image); frames 1-40 are the spinning globe shown while a
-   location is loading. Optional: imported from thunar.css when the badge block there is
-   uncommented. */
+   location is loading. Imported from thunar.css. */
 @keyframes throbber {
   2.5% { -gtk-icon-source: url("../assets/throbber/throbber_f1.png"); }
   5% { -gtk-icon-source: url("../assets/throbber/throbber_f2.png"); }
