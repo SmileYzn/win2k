@@ -21,6 +21,7 @@ mesma forma as cores do MATE Terminal (dconf) e do Xfce Terminal (xfconf).
 """
 
 import argparse
+import ast
 import atexit
 import json
 import os
@@ -38,6 +39,12 @@ HOME = Path.home()
 STATE_DIR = HOME / ".local/share/win2k-installer"
 STATE_FILE = STATE_DIR / "state.json"
 PANEL_PROFILE = SRC / "Panel/win2k.tar.bz2"
+MATE_PANEL_PROFILE = SRC / "Panel/mate-win2k.dconf"
+MATE_PANEL_BACKUP = STATE_DIR / "mate-panel-backup.dconf"
+MINTMENU_APPLET = Path("/usr/share/mate-panel/applets/org.mate.panel.MintMenuApplet.mate-panel-applet")
+# Texto e ícone do botão do MintMenu (fora do dconf do painel), em GVariant.
+MINTMENU_SETTINGS = [("/com/linuxmint/mintmenu/applet-text", "'Iniciar'"),
+                     ("/com/linuxmint/mintmenu/applet-icon", "'start-here'")]
 MENU_SYSTEM_PATH = "/usr/share/win2k-menu"
 # Ambiente original para os comandos chamados: a janela muda GTK_THEME e XDG_DATA_DIRS
 # só para si mesma (veja use_project_theme).
@@ -91,7 +98,12 @@ COMPONENTS = {
     },
     # O painel não copia arquivos: carrega o perfil do xfce4-panel-profiles.
     "panel": {
-        "label": "Painel Windows 2000 (substitui o painel atual)",
+        "label": "Painel Windows 2000 para XFCE (substitui o painel atual)",
+        "files": {"system": [], "user": []},
+    },
+    # Também sem arquivos: carrega Panel/mate-win2k.dconf em /org/mate/panel/.
+    "mate-panel": {
+        "label": "Painel Windows 2000 para MATE (substitui o painel atual)",
         "files": {"system": [], "user": []},
     },
     # Também sem arquivos: só troca as cores do MATE Terminal e do Xfce Terminal.
@@ -102,7 +114,7 @@ COMPONENTS = {
 }
 FILE_COMPONENTS = [c for c in COMPONENTS if COMPONENTS[c]["files"]["user"]]
 SETTINGS_ONLY = [c for c in COMPONENTS if c not in FILE_COMPONENTS]   # sempre aplicados
-DEFAULT_OFF = {"panel", "terminal"}
+DEFAULT_OFF = {"panel", "mate-panel", "terminal"}
 
 # Tema de cores do prompt do MS-DOS no Windows 2000: cinza sobre preto, as 16 cores do console
 # e cursor sublinhado piscando.
@@ -257,6 +269,37 @@ def dconf_reset(path):
     run(["dconf", "reset", path])
 
 
+def mate_panel_running():
+    return run(["pgrep", "-u", str(os.getuid()), "-x", "mate-panel"]).returncode == 0
+
+
+def restart_mate_panel(log):
+    """Recarrega o painel do MATE (tema, ícones ou layout novos), se ele estiver rodando."""
+    if mate_panel_running():
+        subprocess.Popen(["mate-panel", "--replace"], env=CHILD_ENV, start_new_session=True,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        log("Painel do MATE reiniciado")
+
+
+def load_mate_panel(text):
+    """Troca a configuração do painel do MATE pelo dconf em text.
+
+    O "dconf load" grava tudo numa só mudança, que o painel em execução lê de uma vez. Um
+    "dconf reset" antes faria o painel ver os objetos sumirem e apagar a configuração deles;
+    por isso as pastas que sobram (objetos e painéis fora das listas novas, que o painel
+    ignora) só são apagadas depois.
+    """
+    subprocess.run(["dconf", "load", "/org/mate/panel/"], input=text, text=True,
+                   capture_output=True, env=CHILD_ENV, check=True)
+    for kind, key in (("objects", "object-id-list"), ("toplevels", "toplevel-id-list")):
+        m = re.search(rf"^{key}=(\[.*\])$", text, re.M)
+        keep = set(ast.literal_eval(m.group(1))) if m else set()
+        listing = run(["dconf", "list", f"/org/mate/panel/{kind}/"]).stdout.split()
+        for entry in listing:
+            if entry.endswith("/") and entry[:-1] not in keep:
+                run(["dconf", "reset", "-f", f"/org/mate/panel/{kind}/{entry}"])
+
+
 def terminal_profile():
     """Caminho dconf do perfil padrão do MATE Terminal, ou None se ele não estiver instalado."""
     if not shutil.which("mate-terminal") or not shutil.which("dconf"):
@@ -325,6 +368,24 @@ def apply_component(comp, mode, state, log):
         run(["xfce4-panel-profiles", "load", str(PANEL_PROFILE)], check=True)
         log("  perfil do painel carregado")
         return
+    if comp == "mate-panel":
+        if not shutil.which("mate-panel") or not shutil.which("dconf"):
+            log("  MATE (mate-panel e dconf) não encontrado; nada a aplicar")
+            return
+        if not MATE_PANEL_BACKUP.exists():
+            STATE_DIR.mkdir(parents=True, exist_ok=True)
+            MATE_PANEL_BACKUP.write_text(run(["dconf", "dump", "/org/mate/panel/"], check=True).stdout)
+            log(f"  backup do painel atual: {MATE_PANEL_BACKUP}")
+        for path, value in MINTMENU_SETTINGS:
+            if f"dconf|{path}" not in previous:     # só o valor de antes da 1ª aplicação
+                previous[f"dconf|{path}"] = ["gvariant", dconf_get(path)]
+            dconf_set(path, value)
+        load_mate_panel(MATE_PANEL_PROFILE.read_text())
+        log("  painel Windows 2000 carregado (MintMenu com \"Iniciar\")")
+        if not MINTMENU_APPLET.exists():
+            log("  atenção: o MintMenu não está instalado; o botão Iniciar só aparece com ele"
+                " (pacote mintmenu)")
+        return
     if comp == "terminal":
         profile = terminal_profile()
         if profile:
@@ -381,6 +442,10 @@ def restore_component(comp, state, log):
             backup.unlink()
             log("  painel anterior restaurado")
         return
+    if comp == "mate-panel" and MATE_PANEL_BACKUP.exists():
+        load_mate_panel(MATE_PANEL_BACKUP.read_text())
+        MATE_PANEL_BACKUP.unlink()
+        log("  painel anterior do MATE restaurado")
     prefixes = {
         "theme": ("xsettings|/Net/ThemeName", "xfwm4|", "xfce4-notifyd|"),
         "icons": ("xsettings|/Net/IconThemeName",),
@@ -389,6 +454,7 @@ def restore_component(comp, state, log):
         "wallpaper": ("xfce4-desktop|",),
         "menu": ("xfce4-panel|",),
         "terminal": ("dconf|/org/mate/terminal/", "xfce4-terminal|"),
+        "mate-panel": ("dconf|/com/linuxmint/mintmenu/",),
     }[comp]
     for key in [k for k in previous if k.startswith(prefixes)]:
         kind, value = previous.pop(key)
@@ -464,6 +530,8 @@ def do_install(comps, mode, apply, log, progress=lambda f: None):
         progress(done / steps)
     if ("menu" in apply and "menu" in comps) and "panel" not in comps:
         restart_panel(log)
+    if {"theme", "icons", "mate-panel"} & set(comps):
+        restart_mate_panel(log)
     log("Instalação concluída.")
 
 
@@ -490,6 +558,8 @@ def do_uninstall(comps, mode, log, progress=lambda f: None):
     progress(1)
     if "menu" in comps:
         restart_panel(log)
+    if {"theme", "icons", "mate-panel"} & set(comps):
+        restart_mate_panel(log)
     log("Desinstalação concluída.")
 
 
@@ -501,6 +571,8 @@ def terminal_applied():
 def status_text(comp):
     if comp == "panel":
         return "backup salvo" if (STATE_DIR / "panel-backup.tar.bz2").exists() else ""
+    if comp == "mate-panel":
+        return "backup salvo" if MATE_PANEL_BACKUP.exists() else ""
     if comp == "terminal":
         return "aplicado" if terminal_applied() else ""
     where = [n for m, n in (("user", "usuário"), ("system", "sistema")) if installed_in(comp, m)]
@@ -523,8 +595,11 @@ DESCRIPTIONS = {
     "wallpaper": "Papel de parede do Windows 2000.",
     "menu": "Menu Iniciar clássico com Programas, Documentos, Configurações, Pesquisar, "
             "Executar, Fazer logoff e Desligar.",
-    "panel": "Barra de tarefas no estilo Windows 2000. Substitui o painel atual; um backup "
-             "é salvo e volta ao remover este componente.",
+    "panel": "Barra de tarefas do XFCE no estilo Windows 2000. Substitui o painel atual; um "
+             "backup é salvo e volta ao remover este componente.",
+    "mate-panel": "Barra de tarefas do MATE no estilo Windows 2000: MintMenu como botão Iniciar, "
+                  "Inicialização rápida, lista de janelas, área de notificação e relógio. "
+                  "Substitui o painel atual; um backup é salvo e volta ao remover.",
     "terminal": "Tema de cores do prompt do MS-DOS para o MATE Terminal e o Xfce Terminal: "
                 "texto cinza sobre fundo preto, as 16 cores do DOS e cursor sublinhado. "
                 "As cores anteriores voltam ao remover.",
@@ -741,7 +816,7 @@ def gui_main():
         def build_welcome(self):
             box = page("Bem-vindo ao Assistente de instalação do tema Windows 2000", big=True)
             box.pack_start(text(
-                "Este assistente instala o visual do Windows 2000 no XFCE: janelas, ícones, "
+                "Este assistente instala o visual do Windows 2000 no XFCE e no MATE: janelas, ícones, "
                 "cursores, sons, papel de parede, menu Iniciar e barra de tarefas.\n\n"
                 "Você escolhe os componentes e se a instalação vale só para você ou para "
                 "todos os usuários deste computador. O assistente também remove o tema e "
@@ -858,6 +933,16 @@ def gui_main():
             self.finish_text = text("")
             self.finish_box.pack_start(self.finish_title, False, False, 0)
             self.finish_box.pack_start(self.finish_text, False, False, 8)
+            # Como no Setup do Windows 2000: reiniciar agora ou depois.
+            self.reboot_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+            self.reboot_now = Gtk.RadioButton.new_with_mnemonic(
+                None, "_Sim, desejo reiniciar o computador agora.")
+            self.reboot_later = Gtk.RadioButton.new_with_mnemonic_from_widget(
+                self.reboot_now, "_Não, reiniciarei o computador mais tarde.")
+            self.reboot_later.set_active(True)
+            for w in (self.reboot_now, self.reboot_later):
+                self.reboot_box.pack_start(w, False, False, 0)
+            self.finish_box.pack_start(self.reboot_box, False, False, 0)
             self.finish_exp = Gtk.Expander(label="_Detalhes", use_underline=True)
             self.finish_exp.add(self.log_view())
             self.finish_box.pack_start(self.finish_exp, True, True, 0)
@@ -883,6 +968,8 @@ def gui_main():
                 if removing:
                     if comp == "panel":
                         row[0] = (STATE_DIR / "panel-backup.tar.bz2").exists()
+                    elif comp == "mate-panel":
+                        row[0] = MATE_PANEL_BACKUP.exists()
                     elif comp == "terminal":
                         row[0] = terminal_applied()
                     else:
@@ -927,8 +1014,13 @@ def gui_main():
                 for c, n in zip(comps, names)))
             warn = []
             if "panel" in comps:
-                warn.append("O painel atual será substituído; um backup é salvo." if not removing
-                            else "O painel salvo antes da instalação será restaurado.")
+                warn.append("O painel atual do XFCE será substituído; um backup é salvo."
+                            if not removing else
+                            "O painel do XFCE salvo antes da instalação será restaurado.")
+            if "mate-panel" in comps:
+                warn.append("O painel atual do MATE será substituído; um backup é salvo."
+                            if not removing else
+                            "O painel do MATE salvo antes da instalação será restaurado.")
             if "terminal" in comps:
                 warn.append("As cores do MATE Terminal e do Xfce Terminal serão trocadas."
                             if not removing else
@@ -960,6 +1052,8 @@ def gui_main():
         def go(self, step):
             name = self.pages[self.index]
             if name == "finish":
+                if self.reboot_box.get_visible() and self.reboot_now.get_active():
+                    subprocess.Popen(["systemctl", "reboot"], env=CHILD_ENV, start_new_session=True)
                 self.destroy()
                 return
             if step > 0 and name == "type":
@@ -1028,6 +1122,7 @@ def gui_main():
                 self.finish_text.set_text(f"Ocorreu um erro: {error}\n\nVeja os detalhes abaixo. "
                                           "Nenhuma configuração foi aplicada depois do erro.")
                 self.finish_exp.set_expanded(True)
+                self.reboot_box.hide()
             else:
                 verb = "removido" if removing else "instalado"
                 self.finish_title.set_markup("<span weight='bold' size='large'>Concluindo o Assistente "
@@ -1036,7 +1131,9 @@ def gui_main():
                          "\n\nAlguns aplicativos abertos só mudam de aparência depois de reabertos. "
                          "Os cursores podem exigir sair e entrar de novo na sessão.")
                 self.finish_text.set_text(f"O tema Windows 2000 foi {verb} com êxito.{extra}"
-                                          "\n\nPara fechar o assistente, clique em Concluir.")
+                                          "\n\nPara ver todas as mudanças, reinicie o computador. "
+                                          "Para fechar o assistente, clique em Concluir.")
+                self.reboot_box.show_all()
             self.index = self.pages.index("finish")
             self.show_page()
 

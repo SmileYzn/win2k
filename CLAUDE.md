@@ -21,6 +21,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 | `Wallpaper/Win2k` | Papéis de parede |
 | `Menu` | `win2k-start.menu` (plugin "Menu de aplicativos"), `applications/`, `desktop-directories/`, `win2k-logoff.py` |
 | `Panel/win2k.tar.bz2` | Perfil do xfce4-panel-profiles |
+| `Panel/mate-win2k.dconf` | Painel do MATE (dconf de `/org/mate/panel/`, sem `history-mate-run`, posições presas à direita) |
 | `Setup` | `win2k-installer.py` (assistente + CLI) e imagens do assistente |
 | `tools` | `win2k-sounds.py` (testador de sons), `icon-gallery.py` |
 | `Screenshots` | Capturas usadas no README |

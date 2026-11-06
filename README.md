@@ -35,7 +35,8 @@ Os principais ícones do pacote estão em [`Icon/icones.html`](Icon/icones.html)
 | Sons | `Sound/Win2k` | Esquema "Padrão do Windows": Ding, Chord, Notify, Recycle, logon e logoff. |
 | Papel de parede | `Wallpaper/Win2k` | Papéis de parede no estilo Windows 2000. |
 | Menu Iniciar | `Menu` | Menu clássico para o plugin "Menu de aplicativos": favoritos, Programas, Documentos (pastas do usuário), Configurações, Pesquisar, Ajuda, Executar, Fazer logoff e Desligar. |
-| Painel | `Panel/win2k.tar.bz2` | Barra de tarefas pronta (perfil do xfce4-panel-profiles): botão Iniciar, Inicialização rápida com alça, lista de janelas, área de notificação e relógio. |
+| Painel do XFCE | `Panel/win2k.tar.bz2` | Barra de tarefas pronta (perfil do xfce4-panel-profiles): botão Iniciar, Inicialização rápida com alça, lista de janelas, área de notificação e relógio. |
+| Painel do MATE | `Panel/mate-win2k.dconf` | Barra de tarefas do MATE (dconf de `/org/mate/panel/`): MintMenu como botão "Iniciar", Inicialização rápida, lista de janelas, área de notificação, notificações e relógio. Precisa do pacote `mintmenu`. |
 | Tema de cores do terminal MS-DOS | (instalador) | Opcional: cores do prompt do MS-DOS no MATE Terminal e no Xfce Terminal (cinza sobre preto, 16 cores do DOS, cursor sublinhado). As cores anteriores voltam ao remover. |
 | Instalador | `Setup` | Assistente gráfico no estilo do Setup do Windows 2000, com modo de linha de comando. |
 | Ferramentas | `tools` | `win2k-sounds.py`: testador do tema de sons. `icon-gallery.py`: gera a galeria `Icon/icones.html`. |
@@ -77,14 +78,17 @@ python3 Setup/win2k-installer.py --list                      # componentes e ond
 python3 Setup/win2k-installer.py --install all               # tudo, só para o usuário atual
 python3 Setup/win2k-installer.py --install all --system      # tudo, em /usr/share
 python3 Setup/win2k-installer.py --install icons,sounds      # só alguns componentes
-python3 Setup/win2k-installer.py --install all --with-panel  # inclui o painel Windows 2000
+python3 Setup/win2k-installer.py --install all --with-panel  # inclui o painel Windows 2000 do XFCE
+python3 Setup/win2k-installer.py --install mate-panel        # painel Windows 2000 do MATE
 python3 Setup/win2k-installer.py --install terminal          # tema de cores do terminal MS-DOS
 python3 Setup/win2k-installer.py --install theme --no-apply  # copia sem ativar
 python3 Setup/win2k-installer.py --uninstall all             # remove e restaura as configurações
 ```
 
-Componentes: `theme`, `icons`, `cursors`, `sounds`, `wallpaper`, `menu`, `panel`, `terminal`.
-`panel` e `terminal` ficam fora de `all` e precisam ser pedidos pelo nome.
+Componentes: `theme`, `icons`, `cursors`, `sounds`, `wallpaper`, `menu`, `panel`, `mate-panel`, `terminal`.
+`panel`, `mate-panel` e `terminal` ficam fora de `all` e precisam ser pedidos pelo nome. Os dois
+painéis guardam o painel atual antes de trocá-lo e o devolvem ao remover; o do MATE é reiniciado
+sozinho, assim como depois de instalar o tema ou os ícones.
 
 ### Desinstalação
 
