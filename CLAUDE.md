@@ -15,7 +15,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 | Pasta | Conteúdo |
 |---|---|
 | `Theme/Win2k` | `gtk-2.0`, `gtk-3.0` (+ links `gtk-3.22`, `gtk-3.24`), `gtk-4.0`, `xfwm4`, `xfwm4_hidpi`, `openbox-3`, `metacity-1`, `cinnamon`, `gnome-shell`, `xfce-notify-4.0` |
-| `Icon/Win2k` | Pacote de ícones (~32 mil PNGs, ~25 mil links), GPL-2.0 (`Icon/Win2k/LICENSE`). `icones.html` é gerado por `tools/icon-gallery.py`. Sincronizado com o SE98 (github.com/nestoris/Win98SE, pasta `SE98`) até o commit `4d785dc0`: na próxima sincronização, aplicar `git diff 4d785dc0 HEAD -- SE98` com `git apply -p2 --directory=Icon/Win2k` |
+| `Icon/Win2k` | Pacote de ícones (~32 mil PNGs, ~25 mil links), GPL-2.0 (`Icon/Win2k/LICENSE`). `icones.html` é gerado por `tools/icon-gallery.py`. Sincronizado com o SE98 (github.com/nestoris/Win98SE, pasta `SE98`) até o commit `a837b57a`: na próxima sincronização, aplicar `git diff a837b57a HEAD -- SE98` com `git apply -p2 --directory=Icon/Win2k` |
 | `Cursor/Win2k_Cursors` | Cursores |
 | `Sound/Win2k` | Tema de sons freedesktop (`stereo/*.wav`) + `win2k-logon-sound.desktop` (autostart) |
 | `Wallpaper/Win2k` | Papéis de parede |
@@ -55,7 +55,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 - Capturas: nunca da tela real do usuário (ela tem dados pessoais). Usar só a janela de teste.
 - Janelas GTK isoladas: `Xephyr :5 -screen 1024x768 -ac` + `env -u DBUS_SESSION_BUS_ADDRESS DISPLAY=:5`. Cliques e teclas com `xdotool`, janelas com `wmctrl` (ou `xdotool`), sempre com `DISPLAY=:5`. Medição de pixels com PIL (`python-pillow`).
 - Tema do projeto sem instalar: link `themes/Win2k` → `Theme/Win2k` num diretório colocado no começo do `XDG_DATA_DIRS`, + `GTK_THEME=Win2k`.
-- Sessão XFCE completa isolada (para capturas): `dbus-run-session` com `XDG_CONFIG_HOME`/`HOME` de demonstração (cópias dos canais xfconf) rodando xfsettingsd, xfwm4, xfdesktop e xfce4-panel no Xephyr. Para caminho e usuário genéricos: `unshare --user --map-root-user --mount --uts`, tmpfs em `/home`, bind de `/home/usuario` e de um `/etc/passwd` falso, depois `unshare --user --map-user=1000 --map-group=1000`.
+- Sessão XFCE completa isolada (para capturas): `dbus-run-session` com `XDG_CONFIG_HOME`/`HOME` de demonstração (cópias dos canais xfconf) rodando xfsettingsd, xfwm4, xfdesktop e xfce4-panel no Xephyr. Sempre com o compositor ligado (`xfwm4 --compositor=on`), como no sistema do usuário: sem ele, o GTK 3 não dá decoração CSD aos menus e eles aparecem sem moldura. Para caminho e usuário genéricos: `unshare --user --map-root-user --mount --uts`, tmpfs em `/home`, bind de `/home/usuario` e de um `/etc/passwd` falso, depois `unshare --user --map-user=1000 --map-group=1000`.
 - Tela de login: `lightdm --test-mode --config <conf>` dentro desse namespace, com um `Xephyr` intermediário no `PATH` para definir `-screen`.
 - Instalador sem efeitos reais: `HOME` falso + `xfconf-query`, `xfce4-panel` e `xfce4-panel-profiles` falsos no `PATH`.
 
