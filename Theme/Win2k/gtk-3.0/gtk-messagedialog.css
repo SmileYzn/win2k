@@ -9,7 +9,9 @@
    Make sure that all changes made here are part of the GtkMessageDialog.
 */
 
-messagedialog .titlebar {
+/* The window bevel is only drawn here when GTK decorates the dialog itself (CSD). With a
+   window manager frame (xfwm4), drawing it again shows a double border. */
+messagedialog.csd .titlebar {
   border: 1px solid;
   border-radius: 0px;
   border-top-color: @border_light;
@@ -17,7 +19,7 @@ messagedialog .titlebar {
   border-left-color: @border_light;
   border-bottom-color: @bg_color;
   box-shadow: inset 1px 1px @border_bright, inset -1px 0px @border_shade; }
-messagedialog .dialog-vbox {
+messagedialog.csd .dialog-vbox {
   border-bottom: 1px solid @border_dark;
   border-left: 1px solid @border_light;
   border-right: 1px solid @border_dark;
