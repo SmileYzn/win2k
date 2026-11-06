@@ -25,10 +25,12 @@ the whisker menu without having to correct their pointer location. */
     #whiskermenu-button:checked > box,
     #applicationmenu-button:active > box,
     #applicationmenu-button:checked > box {
-      padding-left: 3px;
-      padding-right: 1px;
+      /* Windows 2000 sunken Start button: dark shadow and shadow on the top and left, white on
+         the bottom and right (start_pressed.png, so the corners match exactly). Same 2px
+         border as the raised button; the content moves 1px right and down. */
+      padding: 3px 1px 1px 3px;
       margin: 1px;
-      border-image: url("../buttons/button_pressed.png");
+      border-image: url("../buttons/start_pressed.png");
       border-image-slice: 2 2 2 2;
       border-radius: 0px; }
   #whiskermenu-button > box > image,
