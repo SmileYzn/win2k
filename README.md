@@ -36,6 +36,7 @@ Os principais ícones do pacote estão em [`Icon/icones.html`](Icon/icones.html)
 | Papel de parede | `Wallpaper/Win2k` | Papéis de parede no estilo Windows 2000. |
 | Menu Iniciar | `Menu` | Menu clássico para o plugin "Menu de aplicativos": favoritos, Programas, Documentos (pastas do usuário), Configurações, Pesquisar, Ajuda, Executar, Fazer logoff e Desligar. |
 | Painel | `Panel/win2k.tar.bz2` | Barra de tarefas pronta (perfil do xfce4-panel-profiles): botão Iniciar, Inicialização rápida com alça, lista de janelas, área de notificação e relógio. |
+| Tema de cores do terminal MS-DOS | (instalador) | Opcional: cores do prompt do MS-DOS no MATE Terminal e no Xfce Terminal (cinza sobre preto, 16 cores do DOS, cursor sublinhado). As cores anteriores voltam ao remover. |
 | Instalador | `Setup` | Assistente gráfico no estilo do Setup do Windows 2000, com modo de linha de comando. |
 | Ferramentas | `tools` | `win2k-sounds.py`: testador do tema de sons. `icon-gallery.py`: gera a galeria `Icon/icones.html`. |
 
@@ -77,11 +78,13 @@ python3 Setup/win2k-installer.py --install all               # tudo, só para o 
 python3 Setup/win2k-installer.py --install all --system      # tudo, em /usr/share
 python3 Setup/win2k-installer.py --install icons,sounds      # só alguns componentes
 python3 Setup/win2k-installer.py --install all --with-panel  # inclui o painel Windows 2000
+python3 Setup/win2k-installer.py --install terminal          # tema de cores do terminal MS-DOS
 python3 Setup/win2k-installer.py --install theme --no-apply  # copia sem ativar
 python3 Setup/win2k-installer.py --uninstall all             # remove e restaura as configurações
 ```
 
-Componentes: `theme`, `icons`, `cursors`, `sounds`, `wallpaper`, `menu`, `panel`.
+Componentes: `theme`, `icons`, `cursors`, `sounds`, `wallpaper`, `menu`, `panel`, `terminal`.
+`panel` e `terminal` ficam fora de `all` e precisam ser pedidos pelo nome.
 
 ### Desinstalação
 

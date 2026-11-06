@@ -16,7 +16,8 @@ Modos:
     com o próprio script chamado de novo pelo pkexec (--root); a janela nunca roda como root.
 
 "Aplicar" ativa cada parte no XFCE (xfconf-query). Os valores anteriores ficam guardados
-em ~/.local/share/win2k-installer e voltam ao desinstalar.
+em ~/.local/share/win2k-installer e voltam ao desinstalar. O componente "terminal" grava da
+mesma forma as cores do MATE Terminal (dconf) e do Xfce Terminal (xfconf).
 """
 
 import argparse
@@ -93,9 +94,42 @@ COMPONENTS = {
         "label": "Painel Windows 2000 (substitui o painel atual)",
         "files": {"system": [], "user": []},
     },
+    # Também sem arquivos: só troca as cores do MATE Terminal e do Xfce Terminal.
+    "terminal": {
+        "label": "Tema de cores do terminal MS-DOS",
+        "files": {"system": [], "user": []},
+    },
 }
-FILE_COMPONENTS = [c for c in COMPONENTS if c != "panel"]
-DEFAULT_OFF = {"panel"}
+FILE_COMPONENTS = [c for c in COMPONENTS if COMPONENTS[c]["files"]["user"]]
+SETTINGS_ONLY = [c for c in COMPONENTS if c not in FILE_COMPONENTS]   # sempre aplicados
+DEFAULT_OFF = {"panel", "terminal"}
+
+# Tema de cores do prompt do MS-DOS no Windows 2000: cinza sobre preto, as 16 cores do console
+# e cursor sublinhado piscando.
+DOS_COLORS = ["#000000", "#800000", "#008000", "#808000", "#000080", "#800080", "#008080",
+              "#C0C0C0", "#808080", "#FF0000", "#00FF00", "#FFFF00", "#0000FF", "#FF00FF",
+              "#00FFFF", "#FFFFFF"]
+# MATE Terminal: chaves do perfil no dconf, valores em GVariant.
+MATE_TERMINAL_SETTINGS = [
+    ("use-theme-colors", "false"),
+    ("foreground-color", "'#C0C0C0'"),
+    ("background-color", "'#000000'"),
+    ("bold-color-same-as-fg", "true"),
+    ("palette", "'" + ":".join(DOS_COLORS) + "'"),
+    ("cursor-shape", "'underline'"),
+    ("cursor-blink-mode", "'on'"),
+]
+# Xfce Terminal: propriedades do canal xfce4-terminal.
+XFCE_TERMINAL_SETTINGS = [
+    ("xfce4-terminal", "/color-use-theme", "bool", "false"),
+    ("xfce4-terminal", "/color-foreground", "string", "#C0C0C0"),
+    ("xfce4-terminal", "/color-background", "string", "#000000"),
+    ("xfce4-terminal", "/color-bold-use-default", "bool", "true"),
+    ("xfce4-terminal", "/color-cursor-use-default", "bool", "true"),
+    ("xfce4-terminal", "/color-palette", "string", ";".join(DOS_COLORS)),
+    ("xfce4-terminal", "/misc-cursor-shape", "string", "TERMINAL_CURSOR_SHAPE_UNDERLINE"),
+    ("xfce4-terminal", "/misc-cursor-blinks", "bool", "true"),
+]
 
 
 def dest_path(dest):
@@ -210,6 +244,27 @@ def xfconf_list(channel):
     return out
 
 
+def dconf_get(path):
+    r = run(["dconf", "read", path])
+    return r.stdout.strip() or None if r.returncode == 0 else None
+
+
+def dconf_set(path, value):
+    run(["dconf", "write", path, value], check=True)
+
+
+def dconf_reset(path):
+    run(["dconf", "reset", path])
+
+
+def terminal_profile():
+    """Caminho dconf do perfil padrão do MATE Terminal, ou None se ele não estiver instalado."""
+    if not shutil.which("mate-terminal") or not shutil.which("dconf"):
+        return None
+    name = (dconf_get("/org/mate/terminal/global/default-profile") or "'default'").strip("'")
+    return f"/org/mate/terminal/profiles/{name}/"
+
+
 def menu_plugins():
     return [p for p, v in xfconf_list("xfce4-panel").items()
             if re.fullmatch(r"/plugins/plugin-\d+", p) and v == "applicationsmenu"]
@@ -242,6 +297,8 @@ def settings_for(comp, mode):
             out += [("xfce4-panel", f"{p}/custom-menu", "bool", "true"),
                     ("xfce4-panel", f"{p}/custom-menu-file", "string", menu_file)]
         return out
+    if comp == "terminal":
+        return XFCE_TERMINAL_SETTINGS if shutil.which("xfce4-terminal") else []
     return []
 
 
@@ -268,6 +325,19 @@ def apply_component(comp, mode, state, log):
         run(["xfce4-panel-profiles", "load", str(PANEL_PROFILE)], check=True)
         log("  perfil do painel carregado")
         return
+    if comp == "terminal":
+        profile = terminal_profile()
+        if profile:
+            for key, value in MATE_TERMINAL_SETTINGS:
+                path = profile + key
+                if f"dconf|{path}" not in previous:     # só o valor de antes da 1ª aplicação
+                    previous[f"dconf|{path}"] = ["gvariant", dconf_get(path)]
+                dconf_set(path, value)
+            log(f"  MATE Terminal: cores do MS-DOS no perfil {profile}")
+        if not shutil.which("xfce4-terminal"):
+            if not profile:
+                log("  nem o MATE Terminal nem o Xfce Terminal estão instalados; nada a aplicar")
+            return
 
     items = settings_for(comp, mode)
     if comp == "wallpaper" and not items:
@@ -280,6 +350,8 @@ def apply_component(comp, mode, state, log):
             previous[key] = [kind, xfconf_get(channel, prop)]
         xfconf_set(channel, prop, kind, value)
         log(f"  {channel} {prop} = {value}")
+    if comp == "terminal":
+        return
 
     if comp == "theme":
         # Apps libadwaita (GTK4) só leem o tema em ~/.config/gtk-4.0
@@ -316,11 +388,14 @@ def restore_component(comp, state, log):
         "sounds": ("xsettings|/Net/SoundThemeName", "xsettings|/Net/EnableEventSounds"),
         "wallpaper": ("xfce4-desktop|",),
         "menu": ("xfce4-panel|",),
+        "terminal": ("dconf|/org/mate/terminal/", "xfce4-terminal|"),
     }[comp]
     for key in [k for k in previous if k.startswith(prefixes)]:
         kind, value = previous.pop(key)
         channel, prop = key.split("|", 1)
-        if value is None:
+        if channel == "dconf":
+            dconf_reset(prop) if value is None else dconf_set(prop, value)
+        elif value is None:
             xfconf_reset(channel, prop)
         else:
             xfconf_set(channel, prop, kind, value)
@@ -363,7 +438,7 @@ def do_install(comps, mode, apply, log, progress=lambda f: None):
         raise RuntimeError("não rode o instalador como root; use o modo Sistema")
     comps = [c for c in COMPONENTS if c in comps]       # ordem fixa
     files = [c for c in comps if c in FILE_COMPONENTS]
-    steps = len(files) + len([c for c in comps if c in apply or c == "panel"]) or 1
+    steps = len(files) + len([c for c in comps if c in apply or c in SETTINGS_ONLY]) or 1
     done = 0
 
     if mode == "system" and files:
@@ -380,7 +455,7 @@ def do_install(comps, mode, apply, log, progress=lambda f: None):
 
     state = load_state()
     # O painel antes do menu: o perfil traz o caminho do menu do sistema, que o menu corrige.
-    for comp in sorted((c for c in comps if c in apply or c == "panel"),
+    for comp in sorted((c for c in comps if c in apply or c in SETTINGS_ONLY),
                        key=lambda c: (c != "panel", list(COMPONENTS).index(c))):
         log(f"Aplicando: {COMPONENTS[comp]['label']}")
         apply_component(comp, mode, state, log)
@@ -418,9 +493,16 @@ def do_uninstall(comps, mode, log, progress=lambda f: None):
     log("Desinstalação concluída.")
 
 
+def terminal_applied():
+    return any(k.startswith(("dconf|/org/mate/terminal/", "xfce4-terminal|"))
+               for k in load_state().get("previous", {}))
+
+
 def status_text(comp):
     if comp == "panel":
         return "backup salvo" if (STATE_DIR / "panel-backup.tar.bz2").exists() else ""
+    if comp == "terminal":
+        return "aplicado" if terminal_applied() else ""
     where = [n for m, n in (("user", "usuário"), ("system", "sistema")) if installed_in(comp, m)]
     return " + ".join(where) if where else "não instalado"
 
@@ -443,6 +525,9 @@ DESCRIPTIONS = {
             "Executar, Fazer logoff e Desligar.",
     "panel": "Barra de tarefas no estilo Windows 2000. Substitui o painel atual; um backup "
              "é salvo e volta ao remover este componente.",
+    "terminal": "Tema de cores do prompt do MS-DOS para o MATE Terminal e o Xfce Terminal: "
+                "texto cinza sobre fundo preto, as 16 cores do DOS e cursor sublinhado. "
+                "As cores anteriores voltam ao remover.",
 }
 
 # A janela simula o diálogo do Setup sobre o fundo: moldura em relevo e barra de título
@@ -728,7 +813,8 @@ def gui_main():
             view.get_selection().connect("changed", self.on_select)
             self.comp_view = view
             for comp in COMPONENTS:
-                self.store.append([False, COMPONENTS[comp]["label"], False, comp != "panel", "", comp])
+                self.store.append([False, COMPONENTS[comp]["label"], False,
+                                   comp not in SETTINGS_ONLY, "", comp])
             self.stack.add_named(self.comp_box, "components")
 
         def build_ready(self):
@@ -797,11 +883,13 @@ def gui_main():
                 if removing:
                     if comp == "panel":
                         row[0] = (STATE_DIR / "panel-backup.tar.bz2").exists()
+                    elif comp == "terminal":
+                        row[0] = terminal_applied()
                     else:
                         row[0] = installed_in(comp, self.mode)
                 else:
                     row[0] = comp not in DEFAULT_OFF
-                    row[2] = comp != "panel" and comp not in DEFAULT_OFF
+                    row[2] = comp not in SETTINGS_ONLY and comp not in DEFAULT_OFF
                 row[4] = status_text(comp)
             self.apply_col.set_visible(not removing)
             subtitle = self.comp_box.get_children()[1]
@@ -841,6 +929,10 @@ def gui_main():
             if "panel" in comps:
                 warn.append("O painel atual será substituído; um backup é salvo." if not removing
                             else "O painel salvo antes da instalação será restaurado.")
+            if "terminal" in comps:
+                warn.append("As cores do MATE Terminal e do Xfce Terminal serão trocadas."
+                            if not removing else
+                            "As cores anteriores dos terminais serão restauradas.")
             if self.mode == "system":
                 warn.append("Será pedida a senha de administrador.")
             warn.append(f"Clique em {'Remover' if removing else 'Instalar'} para começar, "
