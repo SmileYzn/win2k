@@ -109,10 +109,15 @@ PanelToplevel.background {
     border-style: solid;
     border-width: 1px;
     box-shadow: inset 1px 1px @border_shade; }
+  /* Separator: the etched line and raised grip that start a Windows 2000 taskbar toolbar,
+     the same image as the Quick Launch handle of the XFCE panel. MATE draws a line with
+     the text colour, which is hidden. */
   .mate-panel-menu-bar.horizontal PanelSeparator {
-    background-image: url("../assets/handle-v.png");
-    background-repeat: repeat-y;
-    padding: 15px; }
+    color: transparent;
+    background-image: url("../assets/panel-handle.png");
+    background-repeat: no-repeat;
+    background-position: 0px 50%;
+    padding: 0px; }
   .mate-panel-menu-bar.vertical PanelSeparator {
     background-image: url("../assets/handle-h.png");
     background-repeat: repeat-x;
@@ -156,13 +161,24 @@ PanelToplevel.background {
         background-size: 2px 2px;
         background-position: 0 0, 1px 1px;
         box-shadow: none; }
-      .mate-panel-menu-bar #PanelApplet button:active box,
-      .mate-panel-menu-bar #PanelApplet button:checked box {
+      /* Task buttons are applet buttons too; leave them to the #tasklist-button rules above
+         (sunken toggle_pressed.png when checked), which this more specific rule overrode. */
+      .mate-panel-menu-bar #PanelApplet button:not(#tasklist-button):active box,
+      .mate-panel-menu-bar #PanelApplet button:not(#tasklist-button):checked box {
         border: 2px solid @border_dark;
         border-top: 3px solid @border_dark;
         border-image: url("../buttons/button_pressed.png");
         border-image-slice: 3 2 2 2;
         box-shadow: none; }
+  /* Applet handles (window list, notification area): hidden. MATE gives every one of these
+     applets a handle and CSS cannot tell them apart, while Windows 2000 has a grip before the
+     task buttons but none before the tray; use separators (styled above) where a grip is
+     wanted. The frame draws the handle with gtk_render_handle in its first 10px; the
+     background image removed here is the dotted grip it would show otherwise. */
+  .mate-panel-menu-bar.horizontal MatePanelAppletFrame,
+  .mate-panel-menu-bar.horizontal MatePanelAppletFrameDBus {
+    -gtk-icon-source: none;
+    background-image: none; }
   /* MATE Panel clock */
   .mate-panel-menu-bar #PanelApplet #clock-applet-button box,
   .mate-panel-menu-bar #PanelApplet #clock-applet-button:active box,
@@ -303,6 +319,44 @@ PanelToplevel.background {
 #mate-menu widget > box > widget > box > box > widget > box > box > button {
 margin: 2px; }
 
+/* MintMenu */
+/* The menu is its own undecorated window (window#mintmenu), not a child of the panel, so the
+   ".mate-panel-menu-bar #mintmenu" rule above never matches it. Give it the raised frame of a
+   Windows 2000 menu, and make its items (flat buttons) behave like menu items: no bevel,
+   highlighted in the selection colour under the pointer. */
+#mintmenu.background {
+  border: 2px solid @border_dark;
+  border-image: url("../assets/window_decoration.png");
+  border-image-slice: 2 2 2 2; }
+  #mintmenu button.flat {
+    border: none;
+    border-image: none;
+    box-shadow: none;
+    background-color: transparent; }
+    #mintmenu button.flat:hover {
+      background-color: @selected_bg_color;
+      color: @selected_fg_color; }
+      #mintmenu button.flat:hover label {
+        color: @selected_fg_color; }
+/* MintMenu panel button, drawn like the Windows 2000 Start button (see whiskermenu.css). The
+   text and icon come from the MintMenu preferences, e.g. "Iniciar" and start-here. MintMenu
+   puts the box in the selected state while the menu is open. */
+.mintmenu {
+  margin: 1px;
+  padding: 0px 2px;
+  border: 2px solid @border_color;
+  border-image: url("../buttons/dialog_button_normal.png");
+  border-image-slice: 2 2 2 2; }
+  .mintmenu:selected {
+    border-image: url("../buttons/start_pressed.png");
+    border-image-slice: 2 2 2 2;
+    background-color: @bg_color;
+    color: @font_color; }
+  .mintmenu label {
+    font-weight: bold; }
+    .mintmenu:selected label {
+      color: @font_color; }
+
 /* MATE Control Center */
 #MyControlCenter button,
 #MyControlCenter button.flat {
@@ -325,6 +379,18 @@ margin: 2px; }
   border-left-color: @bg_shade;
   border-bottom-color: @bg_bright;
   box-shadow: inset 1px 1px @bg_bright, inset -1px -1px @bg_shade; }
+
+/* MATE notifications ("standard" theme of mate-notification-daemon), with the colours of the
+   Xfce ones in xfce-notify-4.0/gtk.css: the Windows tooltip yellow, black text and a black
+   border. The daemon paints a grey background and a coloured stripe in the draw handler of
+   this box; GTK then draws the box's CSS background and border over them. The corners stay
+   square, as in a Windows 2000 tooltip: with a radius the daemon's grey shows behind them. */
+.notification-box.default-theme {
+  background-color: #ffffe1;
+  color: #000000;
+  border: 1px solid #000000; }
+  .notification-box.default-theme image {
+    -gtk-icon-style: regular; }
 
 /* MATE terminal */
 .mate-terminal notebook stack > box {
