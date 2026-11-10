@@ -287,17 +287,34 @@ StScrollBar StButton#hhandle {
   border-left-width: 1px;
   box-shadow: inset -1px -1px 0px 0px #ffffff; }
 
-/* Show desktop: the default applet-box padding (4px at the sides) made the button narrower
-   than tall; 6px makes it 24x24 with a 16px icon on a 28px panel. */
-.show-desktop-cinnamon-org-applet.applet-box {
-  padding-left: 6px;
-  padding-right: 6px; }
-
-/* XApp status icons: one applet-box per icon. The default applet-box padding (4px at the
-   sides, 1px on top) made the box around the icon (shown on hover and click) wider than
-   tall; with 16px icons in the frame, 3px plus 4px on the right makes it a 19x19 square. */
+/* Show desktop and XApp status icons: the applet box fills the panel height, so instead of
+   its raised hover frame (never square) the icon gets the Quick Launch edge described in the
+   Panel Launchers section. Cinnamon stretches the show desktop icon to the panel height, so
+   its edge is a 22x22 background image (the same edge), drawn at its natural size in the
+   middle of the icon; the 3px side padding gives the icon room for it. */
+.show-desktop-cinnamon-org-applet.applet-box,
 .xapp-status-cinnamon-org-applet .applet-box {
-  padding: 3px 4px 3px 3px; }
+  padding: 0px 1px; }
+  .show-desktop-cinnamon-org-applet.applet-box:hover,
+  .show-desktop-cinnamon-org-applet.applet-box:checked,
+  .show-desktop-cinnamon-org-applet.applet-box:active,
+  .xapp-status-cinnamon-org-applet .applet-box:hover,
+  .xapp-status-cinnamon-org-applet .applet-box:checked,
+  .xapp-status-cinnamon-org-applet .applet-box:active {
+    border-image: none; }
+  .show-desktop-cinnamon-org-applet StIcon {
+    padding: 0px 3px; }
+  .show-desktop-cinnamon-org-applet.applet-box:hover StIcon {
+    background-image: url("panel-assets/quicklaunch_hover.png");
+    background-position: center; }
+  .xapp-status-cinnamon-org-applet .applet-box StIcon {
+    padding: 2px 3px 3px 2px;
+    border: 0px solid transparent;
+    border-top-width: 1px;
+    border-left-width: 1px; }
+  .xapp-status-cinnamon-org-applet .applet-box:hover StIcon {
+    border-color: #ffffff;
+    box-shadow: inset -1px -1px 0px 0px #808080; }
 
 #panelLeft.vertical:ltr {
   padding-right: 0px;
@@ -1331,19 +1348,21 @@ StScrollBar StButton#hhandle {
 }
 
 /* Quick Launch buttons, as in Windows 2000: flat, with a thin raised edge under the pointer
-   (Cinnamon does not mark a launcher as pressed, so there is no sunken state). Cinnamon
-   draws one border colour, so the edge is a top/left border plus a 1px inset shadow on the
-   bottom/right; the border stays (transparent) when idle so the button does not move. The
-   box fills the panel height minus its margins and centres the icon: on a 28px panel with
-   16px icons, these margins and padding make a 22x22 square with the icon on the same line
-   as the show desktop icon. */
+   (Cinnamon does not mark a launcher as pressed, so there is no sunken state). The launcher
+   and its icon box fill the panel height, so the edge goes on the icon itself, which keeps
+   its natural size and is centred: 22x22 at any panel height, with 3px around the 16px icon counting the
+   edge. Cinnamon draws one border colour, so the edge is a top/left border plus a 1px inset
+   shadow on the bottom/right; it stays (transparent) when idle so nothing moves. The same
+   edge is used for the show desktop button and the XApp status icons below. */
 .panel-launchers .launcher {
-  padding: 3px 2px 2px 3px;
-  margin: 1px 0px 4px 0px;
-  border: 0px solid transparent;
-  border-top-width: 1px;
-  border-left-width: 1px; }
-  .panel-launchers .launcher:hover {
+  padding: 0px;
+  margin: 0px; }
+  .panel-launchers .launcher StIcon {
+    padding: 2px 3px 3px 2px;
+    border: 0px solid transparent;
+    border-top-width: 1px;
+    border-left-width: 1px; }
+  .panel-launchers .launcher:hover StIcon {
     border-color: #ffffff;
     box-shadow: inset -1px -1px 0px 0px #808080; }
 
