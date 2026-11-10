@@ -1602,8 +1602,11 @@ StScrollBar StButton#hhandle {
  * ===================================================================*/
 /* CinnVIIStarkMenu: its own stylesheet frames the user picture at the top of the menu with
    a rounded 2px grey border (.hover-user-icon); Windows 2000 has no such frame. The applet
-   stylesheet loads after the theme, hence the more specific selector. */
-.starkhover-box .hover-user-icon {
+   stylesheet loads after the theme, hence the more specific selector. The icon of the
+   hovered item (.hover-icon) takes the picture's place and has a 2px transparent border:
+   both must lose it, or the menu changes height on hover. */
+.starkhover-box .hover-user-icon,
+.starkhover-box .hover-icon {
   border: none;
   border-radius: 0px; }
 
