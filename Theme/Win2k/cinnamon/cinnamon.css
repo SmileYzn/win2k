@@ -1404,21 +1404,50 @@ StScrollBar StButton#hhandle {
     border: none;
     background: none; }
 
-/* Menu applet: the Windows 2000 Start button, raised, and sunken while the menu is open
+/* Menu applets: the Windows 2000 Start button, raised, and sunken while the menu is open
    (pressed.png uses the #404040 dark shadow of Windows 2000). The label is the "Iniciar"
-   text set in the applet's preferences. */
-.menu-cinnamon-org-applet.applet-box {
+   text set in the applet's preferences. Cinnamon gives each applet a class made from its
+   uuid: the default menu, CinnVIIStarkMenu, Cinnamenu, Classic Menu and Configurable Menu. */
+.menu-cinnamon-org-applet.applet-box,
+.cinnviistarkmenu-nikokrause-applet.applet-box,
+.cinnamenu-json-applet.applet-box,
+.classic-menu-fredcw-applet.applet-box,
+.configurable-menu-johndoe8771-applet.applet-box {
   border-image: url("panel-assets/button.png") 6;
   padding-left: 6px;
   padding-right: 6px; }
-  .menu-cinnamon-org-applet.applet-box:hover {
+  .menu-cinnamon-org-applet.applet-box:hover,
+  .cinnviistarkmenu-nikokrause-applet.applet-box:hover,
+  .cinnamenu-json-applet.applet-box:hover,
+  .classic-menu-fredcw-applet.applet-box:hover,
+  .configurable-menu-johndoe8771-applet.applet-box:hover {
     border-image: url("panel-assets/button.png") 6; }
   .menu-cinnamon-org-applet.applet-box:checked,
-  .menu-cinnamon-org-applet.applet-box:active {
+  .cinnviistarkmenu-nikokrause-applet.applet-box:checked,
+  .cinnamenu-json-applet.applet-box:checked,
+  .classic-menu-fredcw-applet.applet-box:checked,
+  .configurable-menu-johndoe8771-applet.applet-box:checked,
+  .menu-cinnamon-org-applet.applet-box:active,
+  .cinnviistarkmenu-nikokrause-applet.applet-box:active,
+  .cinnamenu-json-applet.applet-box:active,
+  .classic-menu-fredcw-applet.applet-box:active,
+  .configurable-menu-johndoe8771-applet.applet-box:active {
     border-image: url("panel-assets/pressed.png") 6; }
   .menu-cinnamon-org-applet .applet-label,
+  .cinnviistarkmenu-nikokrause-applet .applet-label,
+  .cinnamenu-json-applet .applet-label,
+  .classic-menu-fredcw-applet .applet-label,
+  .configurable-menu-johndoe8771-applet .applet-label,
   .menu-cinnamon-org-applet .applet-label:hover,
-  .menu-cinnamon-org-applet .applet-label:checked {
+  .cinnviistarkmenu-nikokrause-applet .applet-label:hover,
+  .cinnamenu-json-applet .applet-label:hover,
+  .classic-menu-fredcw-applet .applet-label:hover,
+  .configurable-menu-johndoe8771-applet .applet-label:hover,
+  .menu-cinnamon-org-applet .applet-label:checked,
+  .cinnviistarkmenu-nikokrause-applet .applet-label:checked,
+  .cinnamenu-json-applet .applet-label:checked,
+  .classic-menu-fredcw-applet .applet-label:checked,
+  .configurable-menu-johndoe8771-applet .applet-label:checked {
     font-weight: bold; }
 
 .applet-box {
