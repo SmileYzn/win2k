@@ -45,6 +45,52 @@ window.ssd .titlebar {
     window.ssd .titlebar:backdrop label {
       color: @inactive_title_text_color; }
 
+/* Muffin (Cinnamon) and Mutter frames. These window managers no longer read metacity-1 themes:
+   they draw the frame with this CSS, as window.background.ssd > decoration >
+   headerbar.titlebar.default-decoration > label.title and button.titlebutton > image.
+   The decoration is drawn over the whole frame and the title bar over its top part, across
+   the full width, so the title bar draws the top, left and right edges of the Windows 2000
+   frame itself (ssd_titlebar_frame.png, the pixels of the xfwm4 theme) and the decoration
+   the rest, with no top edge. The title bar height is the largest of its min-height, the
+   title text and the buttons (Muffin reserves 16px for a button icon), plus its borders:
+   4px frame + 18px bar, as in xfwm4. Muffin always centres the title. */
+window.ssd > decoration {
+  padding: 0px 2px 2px 2px;
+  border: 2px solid @border_dark;
+  border-top-width: 0px;
+  border-image: url("assets/window_decoration.png");
+  border-image-slice: 2 2 2 2;
+  border-radius: 0px;
+  box-shadow: none; }
+  window.ssd > decoration > headerbar.default-decoration {
+    min-height: 18px;
+    padding: 0px 2px 0px 0px;
+    margin: 0px;
+    border: 4px solid @border_dark;
+    border-bottom-width: 0px;
+    border-image: url("assets/ssd_titlebar_frame.png");
+    border-image-slice: 4 4 0 4;
+    background-clip: padding-box; }
+    window.ssd > decoration > headerbar.default-decoration label.title {
+      margin: 0px;
+      font-weight: bold;
+      font-size: 9pt; }
+    window.ssd > decoration > headerbar.default-decoration button.titlebutton {
+      min-width: 16px;
+      min-height: 14px;
+      margin-top: 1px;
+      margin-bottom: 1px; }
+  /* Maximized and tiled windows have no frame, as in Windows 2000. */
+  window.ssd.maximized > decoration,
+  window.ssd.tiled > decoration {
+    padding: 0px;
+    border: none;
+    border-image: none; }
+    window.ssd.maximized > decoration > headerbar.default-decoration,
+    window.ssd.tiled > decoration > headerbar.default-decoration {
+      border: none;
+      border-image: none; }
+
 window.csd tooltip {
   border-radius: 0;
   border: 0 none @border_dark;
