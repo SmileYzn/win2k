@@ -452,12 +452,16 @@ StScrollBar StButton#hhandle {
   color: #ffffff;
   font-size: 2em; }
 
+/* No box-shadow here: Cinnamon 6.8 (St) crashes when it draws a box-shadow without blur on
+   a widget with a border-image (SIGSEGV in _st_create_shadow_cairo_pattern, after
+   "calculate_gaussian_kernel: assertion 'sigma > 0' failed"), which closed Cinnamon on
+   opening Expo (Ctrl+Alt+Up). The active workspace gets a frame image with a 2px blue
+   ring instead of a blue inset shadow. */
 .expo-workspace-thumbnail-frame {
   border: 4px transparent;
-  border-image: url("frame/frame.png") 6;
-  box-shadow: inset 1px 1px #D4D0C8, inset -1px -1px #D4D0C8; }
+  border-image: url("frame/frame.png") 6; }
   .expo-workspace-thumbnail-frame#active {
-  box-shadow: inset 1px 1px #0A246A, inset -1px -1px #0A246A; }
+    border-image: url("frame/frame_active.png") 4; }
 
 /* ===================================================================
 * Desklets (desklet.js)
