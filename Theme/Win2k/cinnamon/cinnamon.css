@@ -441,9 +441,10 @@ StScrollBar StButton#hhandle {
   height: 150px;
   width: 226px; }
 
+/* Expo background: the Windows 2000 desktop colour. */
 .expo-background {
-  background-image: url("background-assets/flying_toasters.png");
-  background-repeat: repeat; }
+  background-image: none;
+  background-color: #3A6EA5; }
 
 .workspace-overview-background-shade {
   background-color: rgba(0, 0, 0, .4); }
