@@ -179,9 +179,16 @@ StScrollBar StButton#hhandle {
 .popup-combobox-item {
   spacing: 1em; }
 
+/* Menu separator: the etched line of Windows 2000 menus, a grey row over a white one. It
+   was a 2px image with 4px slices, which Cinnamon stretched into two extra #BFBFBF rows; a
+   1px grey top border over 1px of white background has no stretching. */
 .popup-separator-menu-item {
-  border-image: url("Handles/handle-h.png") 4;
-  height: 2px; }
+  border-image: none;
+  border: 0px solid #808080;
+  border-top-width: 1px;
+  height: 1px;
+  background-color: #ffffff;
+  -gradient-height: 0px; }
   .popup-alternating-menu-item:alternate {
     font-weight: bold;
     color: black; }
