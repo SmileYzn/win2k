@@ -273,6 +273,32 @@ StScrollBar StButton#hhandle {
   spacing: 0px;
 }
 
+/* Right zone of a horizontal panel (tray icons and clock): the thin sunken frame of the
+   Windows 2000 notification area, as the clock of the XFCE panel. Cinnamon ignores
+   per-side border colours and smooths a stretched border-image, so the white bottom and
+   right edges are an inset shadow inside a border that only has a top and a left side. */
+.panel-bottom #panelRight,
+.panel-top #panelRight {
+  margin: 2px 2px 2px 0px;
+  padding: 0px 3px;
+  border-image: none;
+  border: 0px solid #808080;
+  border-top-width: 1px;
+  border-left-width: 1px;
+  box-shadow: inset -1px -1px 0px 0px #ffffff; }
+
+/* Show desktop: the default applet-box padding (4px at the sides) made the button narrower
+   than tall; 6px makes it 24x24 with a 16px icon on a 28px panel. */
+.show-desktop-cinnamon-org-applet.applet-box {
+  padding-left: 6px;
+  padding-right: 6px; }
+
+/* XApp status icons: one applet-box per icon. The default applet-box padding (4px at the
+   sides, 1px on top) made the box around the icon (shown on hover and click) wider than
+   tall; with 16px icons in the frame, 3px plus 4px on the right makes it a 19x19 square. */
+.xapp-status-cinnamon-org-applet .applet-box {
+  padding: 3px 4px 3px 3px; }
+
 #panelLeft.vertical:ltr {
   padding-right: 0px;
 }
@@ -1301,13 +1327,25 @@ StScrollBar StButton#hhandle {
  * Panel Launchers applet (panel-launchers@cinnamon.org/applet.js)
  * ===================================================================*/
 .panel-launchers {
-  spacing: 10px;
+  spacing: 0px;
 }
 
+/* Quick Launch buttons, as in Windows 2000: flat, with a thin raised edge under the pointer
+   (Cinnamon does not mark a launcher as pressed, so there is no sunken state). Cinnamon
+   draws one border colour, so the edge is a top/left border plus a 1px inset shadow on the
+   bottom/right; the border stays (transparent) when idle so the button does not move. The
+   box fills the panel height minus its margins and centres the icon: on a 28px panel with
+   16px icons, these margins and padding make a 22x22 square with the icon on the same line
+   as the show desktop icon. */
 .panel-launchers .launcher {
-  padding: 0px;
-  margin: 0px;
-}
+  padding: 3px 2px 2px 3px;
+  margin: 1px 0px 4px 0px;
+  border: 0px solid transparent;
+  border-top-width: 1px;
+  border-left-width: 1px; }
+  .panel-launchers .launcher:hover {
+    border-color: #ffffff;
+    box-shadow: inset -1px -1px 0px 0px #808080; }
 
 .panel-left .panel-launchers .launcher,
 .panel-right .panel-launchers .launcher {}
@@ -1329,6 +1367,40 @@ StScrollBar StButton#hhandle {
     
 
 .applet-separator-line {}
+
+/* Separator applet on a horizontal panel: the etched line and raised grip that start a
+   Windows 2000 taskbar toolbar (same columns as gtk-3.0/assets/panel-handle.png, used by the
+   XFCE panel), drawn at its natural size: Cinnamon smooths a stretched border-image. */
+.panel-bottom .separator-cinnamon-org-applet.applet-separator,
+.panel-top .separator-cinnamon-org-applet.applet-separator {
+  width: 10px;
+  margin: 0px;
+  padding: 0px;
+  border-image: none;
+  background-image: url("panel-assets/separator_win2k.png");
+  background-position: center; }
+  /* The applet's own line (a 1px light line in Cinnamon's default theme) is not used. */
+  .separator-cinnamon-org-applet .applet-separator-line {
+    width: 0px;
+    border: none;
+    background: none; }
+
+/* Menu applet: the Windows 2000 Start button, raised, and sunken while the menu is open
+   (pressed.png uses the #404040 dark shadow of Windows 2000). The label is the "Iniciar"
+   text set in the applet's preferences. */
+.menu-cinnamon-org-applet.applet-box {
+  border-image: url("panel-assets/button.png") 6;
+  padding-left: 6px;
+  padding-right: 6px; }
+  .menu-cinnamon-org-applet.applet-box:hover {
+    border-image: url("panel-assets/button.png") 6; }
+  .menu-cinnamon-org-applet.applet-box:checked,
+  .menu-cinnamon-org-applet.applet-box:active {
+    border-image: url("panel-assets/pressed.png") 6; }
+  .menu-cinnamon-org-applet .applet-label,
+  .menu-cinnamon-org-applet .applet-label:hover,
+  .menu-cinnamon-org-applet .applet-label:checked {
+    font-weight: bold; }
 
 .applet-box {
   font-weight: bold;
