@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Instalador do tema Windows 2000 para XFCE.
+"""Instalador do tema Windows 2000 para XFCE, MATE e Cinnamon.
 
 Sem argumentos abre a janela. No terminal:
 
@@ -15,8 +15,9 @@ Modos:
   - "Sistema" (--system): copia para /usr/share e /etc/xdg. Só a cópia roda como root,
     com o próprio script chamado de novo pelo pkexec (--root); a janela nunca roda como root.
 
-"Aplicar" ativa cada parte no XFCE (xfconf-query). Os valores anteriores ficam guardados
-em ~/.local/share/win2k-installer e voltam ao desinstalar. O componente "terminal" grava da
+"Aplicar" ativa cada parte no XFCE (xfconf-query) e no Cinnamon (gsettings), conforme o que
+estiver instalado. Os valores anteriores ficam guardados em ~/.local/share/win2k-installer e
+voltam ao desinstalar. O componente "terminal" grava da
 mesma forma as cores do MATE Terminal (dconf) e do Xfce Terminal (xfconf).
 """
 
@@ -182,8 +183,11 @@ def install_files(comp, mode, log):
         log(f"  {src_rel} → {dest}")
     if comp == "icons":
         dest = dest_path(COMPONENTS["icons"]["files"][mode][0][1])
-        run(["gtk-update-icon-cache", "-f", "-t", str(dest)])
-        log("  cache de ícones atualizado")
+        if shutil.which("gtk-update-icon-cache"):
+            run(["gtk-update-icon-cache", "-f", "-t", str(dest)])
+            log("  cache de ícones atualizado")
+        else:
+            log("  gtk-update-icon-cache não encontrado; cache de ícones não atualizado")
 
 
 def fix_menu_paths(new_dir, final_dir):
@@ -230,8 +234,85 @@ def root_main(action, comps):
 
 
 # --------------------------------------------------------------------------
-# Configurações do XFCE (sempre como o usuário)
+# Configurações do XFCE, do MATE e do Cinnamon (sempre como o usuário)
 # --------------------------------------------------------------------------
+
+# Cada área de trabalho só recebe configurações se estiver instalada: no Cinnamon, por
+# exemplo, não há xfconf-query nem xfce4-panel-profiles.
+def have_xfce():
+    return shutil.which("xfconf-query") is not None
+
+
+def have_xfce_panel():
+    return shutil.which("xfce4-panel-profiles") is not None
+
+
+def have_mate_panel():
+    return shutil.which("mate-panel") is not None and shutil.which("dconf") is not None
+
+
+def have_cinnamon():
+    return (shutil.which("cinnamon") is not None and shutil.which("gsettings") is not None
+            and run(["gsettings", "list-keys", "org.cinnamon.theme"]).returncode == 0)
+
+
+def gsettings_get(schema, key):
+    r = run(["gsettings", "get", schema, key])
+    return r.stdout.strip() if r.returncode == 0 else None
+
+
+def gsettings_set(schema, key, value):
+    run(["gsettings", "set", schema, key, value], check=True)
+
+
+def gsettings_reset(schema, key):
+    run(["gsettings", "reset", schema, key])
+
+
+def gvariant_str(text):
+    return "'" + text.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+
+def cinnamon_settings_for(comp, mode):
+    """Lista de (esquema, chave, valor em GVariant) que "Aplicar" grava no Cinnamon."""
+    if comp == "theme":
+        return [("org.cinnamon.desktop.interface", "gtk-theme", "'Win2k'"),
+                ("org.cinnamon.desktop.wm.preferences", "theme", "'Win2k'"),
+                ("org.cinnamon.theme", "name", "'Win2k'")]
+    if comp == "icons":
+        return [("org.cinnamon.desktop.interface", "icon-theme", "'Win2k'")]
+    if comp == "cursors":
+        return [("org.cinnamon.desktop.interface", "cursor-theme", "'Win2k_Cursors'")]
+    if comp == "sounds":
+        # O Cinnamon toca o logon e o logoff pelas próprias chaves; o .desktop de autostart
+        # do som de logon é só para o XFCE (OnlyShowIn).
+        stereo = dest_path(COMPONENTS["sounds"]["files"][mode][0][1]) / "stereo"
+        return [("org.cinnamon.desktop.sound", "theme-name", "'Win2k'"),
+                ("org.cinnamon.desktop.sound", "event-sounds", "true"),
+                ("org.cinnamon.sounds", "login-enabled", "true"),
+                ("org.cinnamon.sounds", "login-file", gvariant_str(str(stereo / "desktop-login.wav"))),
+                ("org.cinnamon.sounds", "logout-enabled", "true"),
+                ("org.cinnamon.sounds", "logout-file", gvariant_str(str(stereo / "desktop-logout.wav")))]
+    if comp == "wallpaper":
+        folder = dest_path(COMPONENTS["wallpaper"]["files"][mode][0][1])
+        images = sorted(folder.glob("*.png")) + sorted(folder.glob("*.jpg"))
+        if not images:
+            return []
+        return [("org.cinnamon.desktop.background", "picture-uri", gvariant_str(images[0].as_uri()))]
+    return []
+
+
+def apply_cinnamon(comp, mode, previous, log):
+    if comp == "menu":
+        log("  Cinnamon: o botão Iniciar é o applet de menu do painel; nada a aplicar")
+        return
+    for schema, key, value in cinnamon_settings_for(comp, mode):
+        state_key = f"gsettings|{schema} {key}"
+        if state_key not in previous:        # só o valor de antes da 1ª aplicação
+            previous[state_key] = ["gvariant", gsettings_get(schema, key)]
+        gsettings_set(schema, key, value)
+        log(f"  Cinnamon: {schema} {key} = {value}")
+
 
 def xfconf_get(channel, prop):
     r = run(["xfconf-query", "-c", channel, "-p", prop])
@@ -341,7 +422,7 @@ def settings_for(comp, mode):
                     ("xfce4-panel", f"{p}/custom-menu-file", "string", menu_file)]
         return out
     if comp == "terminal":
-        return XFCE_TERMINAL_SETTINGS if shutil.which("xfce4-terminal") else []
+        return XFCE_TERMINAL_SETTINGS if shutil.which("xfce4-terminal") and have_xfce() else []
     return []
 
 
@@ -360,6 +441,9 @@ def save_state(state):
 def apply_component(comp, mode, state, log):
     previous = state.setdefault("previous", {})
     if comp == "panel":
+        if not have_xfce_panel():
+            log("  XFCE (xfce4-panel-profiles) não encontrado; nada a aplicar")
+            return
         backup = STATE_DIR / "panel-backup.tar.bz2"
         if not backup.exists():
             STATE_DIR.mkdir(parents=True, exist_ok=True)
@@ -369,7 +453,7 @@ def apply_component(comp, mode, state, log):
         log("  perfil do painel carregado")
         return
     if comp == "mate-panel":
-        if not shutil.which("mate-panel") or not shutil.which("dconf"):
+        if not have_mate_panel():
             log("  MATE (mate-panel e dconf) não encontrado; nada a aplicar")
             return
         if not MATE_PANEL_BACKUP.exists():
@@ -395,16 +479,22 @@ def apply_component(comp, mode, state, log):
                     previous[f"dconf|{path}"] = ["gvariant", dconf_get(path)]
                 dconf_set(path, value)
             log(f"  MATE Terminal: cores do MS-DOS no perfil {profile}")
-        if not shutil.which("xfce4-terminal"):
+        if not (shutil.which("xfce4-terminal") and have_xfce()):
             if not profile:
                 log("  nem o MATE Terminal nem o Xfce Terminal estão instalados; nada a aplicar")
             return
 
-    items = settings_for(comp, mode)
-    if comp == "wallpaper" and not items:
-        log("  nenhuma área de trabalho encontrada no xfdesktop; aplique o papel de parede à mão")
-    if comp == "menu" and not items:
-        log("  o painel não tem o plugin \"Menu de aplicativos\"; nada a apontar")
+    xfce, cinnamon = have_xfce(), have_cinnamon()
+    items = []
+    if xfce:
+        items = settings_for(comp, mode)
+        if comp == "wallpaper" and not items:
+            log("  nenhuma área de trabalho encontrada no xfdesktop; aplique o papel de parede à mão")
+        if comp == "menu" and not items:
+            log("  o painel não tem o plugin \"Menu de aplicativos\"; nada a apontar")
+    elif not cinnamon and comp != "terminal":
+        log("  nem o XFCE (xfconf-query) nem o Cinnamon (gsettings) foram encontrados;"
+            " ative o componente nas configurações da sua área de trabalho")
     for channel, prop, kind, value in items:
         key = f"{channel}|{prop}"
         if key not in previous:          # guarda só o valor de antes da 1ª aplicação
@@ -413,6 +503,8 @@ def apply_component(comp, mode, state, log):
         log(f"  {channel} {prop} = {value}")
     if comp == "terminal":
         return
+    if cinnamon:
+        apply_cinnamon(comp, mode, previous, log)
 
     if comp == "theme":
         # Apps libadwaita (GTK4) só leem o tema em ~/.config/gtk-4.0
@@ -437,30 +529,51 @@ def restore_component(comp, state, log):
     previous = state.get("previous", {})
     if comp == "panel":
         backup = STATE_DIR / "panel-backup.tar.bz2"
-        if backup.exists():
+        if backup.exists() and not have_xfce_panel():
+            log(f"  XFCE (xfce4-panel-profiles) não encontrado; o backup fica em {backup}")
+        elif backup.exists():
             run(["xfce4-panel-profiles", "load", str(backup)], check=True)
             backup.unlink()
             log("  painel anterior restaurado")
         return
-    if comp == "mate-panel" and MATE_PANEL_BACKUP.exists():
+    if comp == "mate-panel" and MATE_PANEL_BACKUP.exists() and not shutil.which("dconf"):
+        log(f"  dconf não encontrado; o backup do painel do MATE fica em {MATE_PANEL_BACKUP}")
+    elif comp == "mate-panel" and MATE_PANEL_BACKUP.exists():
         load_mate_panel(MATE_PANEL_BACKUP.read_text())
         MATE_PANEL_BACKUP.unlink()
         log("  painel anterior do MATE restaurado")
     prefixes = {
-        "theme": ("xsettings|/Net/ThemeName", "xfwm4|", "xfce4-notifyd|"),
-        "icons": ("xsettings|/Net/IconThemeName",),
-        "cursors": ("xsettings|/Gtk/CursorThemeName",),
-        "sounds": ("xsettings|/Net/SoundThemeName", "xsettings|/Net/EnableEventSounds"),
-        "wallpaper": ("xfce4-desktop|",),
+        "theme": ("xsettings|/Net/ThemeName", "xfwm4|", "xfce4-notifyd|",
+                  "gsettings|org.cinnamon.desktop.interface gtk-theme",
+                  "gsettings|org.cinnamon.desktop.wm.preferences theme",
+                  "gsettings|org.cinnamon.theme name"),
+        "icons": ("xsettings|/Net/IconThemeName", "gsettings|org.cinnamon.desktop.interface icon-theme"),
+        "cursors": ("xsettings|/Gtk/CursorThemeName",
+                    "gsettings|org.cinnamon.desktop.interface cursor-theme"),
+        "sounds": ("xsettings|/Net/SoundThemeName", "xsettings|/Net/EnableEventSounds",
+                   "gsettings|org.cinnamon.desktop.sound ", "gsettings|org.cinnamon.sounds "),
+        "wallpaper": ("xfce4-desktop|", "gsettings|org.cinnamon.desktop.background "),
         "menu": ("xfce4-panel|",),
         "terminal": ("dconf|/org/mate/terminal/", "xfce4-terminal|"),
         "mate-panel": ("dconf|/com/linuxmint/mintmenu/",),
     }[comp]
+    skipped = set()
     for key in [k for k in previous if k.startswith(prefixes)]:
-        kind, value = previous.pop(key)
         channel, prop = key.split("|", 1)
+        tool = channel if channel in ("dconf", "gsettings") else "xfconf-query"
+        if not shutil.which(tool):
+            # Sem a ferramenta (outra área de trabalho, ou o XFCE removido): o valor antigo
+            # continua guardado e volta numa próxima remoção feita onde ela existir.
+            if tool not in skipped:
+                log(f"  {tool} não encontrado; valores anteriores mantidos em {STATE_FILE}")
+                skipped.add(tool)
+            continue
+        kind, value = previous.pop(key)
         if channel == "dconf":
             dconf_reset(prop) if value is None else dconf_set(prop, value)
+        elif channel == "gsettings":
+            schema, gkey = prop.split(" ", 1)
+            gsettings_reset(schema, gkey) if value is None else gsettings_set(schema, gkey, value)
         elif value is None:
             xfconf_reset(channel, prop)
         else:
@@ -570,9 +683,13 @@ def terminal_applied():
 
 def status_text(comp):
     if comp == "panel":
-        return "backup salvo" if (STATE_DIR / "panel-backup.tar.bz2").exists() else ""
+        if (STATE_DIR / "panel-backup.tar.bz2").exists():
+            return "backup salvo"
+        return "" if have_xfce_panel() else "XFCE não encontrado"
     if comp == "mate-panel":
-        return "backup salvo" if MATE_PANEL_BACKUP.exists() else ""
+        if MATE_PANEL_BACKUP.exists():
+            return "backup salvo"
+        return "" if have_mate_panel() else "MATE não encontrado"
     if comp == "terminal":
         return "aplicado" if terminal_applied() else ""
     where = [n for m, n in (("user", "usuário"), ("system", "sistema")) if installed_in(comp, m)]
@@ -588,7 +705,7 @@ TITLE = "Instalação do tema Windows 2000"
 
 DESCRIPTIONS = {
     "theme": "Janelas, botões e menus no estilo Windows 2000 para GTK 2, 3 e 4, "
-             "bordas do xfwm4 e balões de notificação.",
+             "bordas do xfwm4, balões de notificação e painel e menus do Cinnamon.",
     "icons": "Pacote de ícones do Windows 2000 para aplicativos, pastas e ações.",
     "cursors": "Ponteiros do mouse do Windows 2000.",
     "sounds": "Esquema de sons \"Padrão do Windows\": Ding, Chord, Notify, logon e logoff.",
@@ -816,8 +933,8 @@ def gui_main():
         def build_welcome(self):
             box = page("Bem-vindo ao Assistente de instalação do tema Windows 2000", big=True)
             box.pack_start(text(
-                "Este assistente instala o visual do Windows 2000 no XFCE e no MATE: janelas, ícones, "
-                "cursores, sons, papel de parede, menu Iniciar e barra de tarefas.\n\n"
+                "Este assistente instala o visual do Windows 2000 no XFCE, no MATE e no Cinnamon: "
+                "janelas, ícones, cursores, sons, papel de parede, menu Iniciar e barra de tarefas.\n\n"
                 "Você escolhe os componentes e se a instalação vale só para você ou para "
                 "todos os usuários deste computador. O assistente também remove o tema e "
                 "devolve as configurações anteriores.\n\n"
@@ -981,10 +1098,10 @@ def gui_main():
             self.apply_col.set_visible(not removing)
             subtitle = self.comp_box.get_children()[1]
             subtitle.set_text(
-                "Marque os componentes a remover. As configurações anteriores do XFCE voltam."
+                "Marque os componentes a remover. As configurações anteriores voltam."
                 if removing else
                 "Marque os componentes a instalar. \"Aplicar\" ativa o componente no XFCE "
-                "logo após a cópia.")
+                "ou no Cinnamon logo após a cópia.")
             self.comp_view.get_selection().select_path(Gtk.TreePath.new_first())
 
         def on_toggle(self, _cell, path, col):
@@ -1172,13 +1289,13 @@ def parse_list(value):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Instalador do tema Windows 2000 para XFCE.")
+    ap = argparse.ArgumentParser(description="Instalador do tema Windows 2000 para XFCE, MATE e Cinnamon.")
     ap.add_argument("--list", action="store_true", help="lista os componentes e onde estão instalados")
     ap.add_argument("--install", type=parse_list, metavar="LISTA",
                     help=f"'all' ou componentes separados por vírgula: {','.join(COMPONENTS)}")
     ap.add_argument("--uninstall", type=parse_list, metavar="LISTA", help="idem, para remover")
     ap.add_argument("--system", action="store_true", help="instala em /usr/share (pede senha pelo pkexec)")
-    ap.add_argument("--no-apply", action="store_true", help="só copia, não ativa no XFCE")
+    ap.add_argument("--no-apply", action="store_true", help="só copia, não ativa no XFCE nem no Cinnamon")
     ap.add_argument("--with-panel", action="store_true", help="também carrega o painel Windows 2000")
     ap.add_argument("--root", nargs="+", help=argparse.SUPPRESS)
     args = ap.parse_args()

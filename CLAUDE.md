@@ -31,7 +31,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 - `SRC` é a raiz do projeto (o script fica em `Setup/`).
 - `COMPONENTS` define origem e destino de cada componente nos modos `user` e `system`. Para um componente novo, basta acrescentar uma entrada ali.
 - Modo sistema: o próprio script é chamado de novo com `pkexec ... --root install|uninstall <comps>`. O lado root só aceita nomes de `COMPONENTS` e destinos fixos. Não aceitar caminhos vindos da linha de comando.
-- "Aplicar" grava pelo `xfconf-query` e guarda o valor anterior em `~/.local/share/win2k-installer/state.json`. A desinstalação restaura esses valores, o `~/.config/gtk-4.0` e o painel salvo.
+- "Aplicar" grava pelo `xfconf-query` (XFCE) e pelo `gsettings` (Cinnamon, `cinnamon_settings_for`), cada um só se a área de trabalho estiver instalada (`have_xfce`, `have_cinnamon`, `have_mate_panel`), e guarda o valor anterior em `~/.local/share/win2k-installer/state.json`. Sem a ferramenta na remoção, o valor fica guardado. A desinstalação restaura esses valores, o `~/.config/gtk-4.0` e o painel salvo.
 - No modo usuário, `fix_menu_paths` troca `/usr/share/win2k-menu` pelo destino real nos `.desktop` do menu.
 - A janela força o tema e os ícones do projeto (`use_project_theme`: links `Win2k-Setup` num diretório temporário + `GTK_THEME`). Os subprocessos recebem `CHILD_ENV`, o ambiente original.
 - GTK 3: sempre `gi.require_version("Gdk", "3.0")` junto com o Gtk, senão o Gdk 4 é carregado.
