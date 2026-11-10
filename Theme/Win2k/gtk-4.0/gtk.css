@@ -710,7 +710,7 @@ scrolledwindow > overshoot.right {
 
 /* Fonts.
    DELIBERATELY UNSET, and this is a metric, not an omission: there is no font-family
-   anywhere in Theme/Win2k/gtk-3.0/*.css. The interface font comes from
+   anywhere in the Theme/Win2k/gtk-3.0 CSS files. The interface font comes from
    XSettings/gsettings - Tahoma or MS Sans Serif at 8pt is the period-correct choice, and
    the xfwm4 title font is set in the xfwm4 settings. Naming
    a family here would make GTK4 apps disagree with GTK3 apps on the same desktop, which

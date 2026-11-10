@@ -81,7 +81,7 @@ window.ssd > decoration {
     /* Muffin paints each button's CSS background over the whole button and draws the
        window-*-symbolic icon on top, centred in a 16px area it does not let the theme move.
        That icon sat 1px too high, so it is made transparent and the 16x16 images carry the
-       xfwm4 button with its glyph (same pixels as xfwm4/*.xpm) under two transparent rows.
+       xfwm4 button with its glyph (same pixels as the xfwm4 .xpm files) under two transparent rows.
        They are not scaled (the 18x18 ones used by GTK title bars came out blurred). Muffin
        sizes a button as its 16px icon plus border, padding and margin and centres it in the
        bar: 1px of top padding and margin, with the image 1px down, puts the 14px button 2px
