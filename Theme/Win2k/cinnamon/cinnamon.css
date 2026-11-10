@@ -33,6 +33,9 @@ StScrollBar StBin#trough {
   background-image: url("scrollbar/checker-board-pattern.png");
   background-repeat: repeat; }
 
+/* Scroll bar thumb: the raised Windows 2000 button of the GTK scroll bars (gtk-3.0/scrollbar/
+   scrollbar_button.png). The image inherited from Chicago95 used the Windows 95 #C8C8C8 grey.
+   St scroll bars have no arrow buttons, so there are none here. */
 StScrollBar StButton#vhandle {
   background-color: #D4D0C8;
   border-image: url("scrollbar/scrollbar_button.png") 6; }
@@ -1597,6 +1600,13 @@ StScrollBar StButton#hhandle {
 /* ===================================================================
  * User applet (user@cinnamon.org/applet.js)
  * ===================================================================*/
+/* CinnVIIStarkMenu: its own stylesheet frames the user picture at the top of the menu with
+   a rounded 2px grey border (.hover-user-icon); Windows 2000 has no such frame. The applet
+   stylesheet loads after the theme, hence the more specific selector. */
+.starkhover-box .hover-user-icon {
+  border: none;
+  border-radius: 0px; }
+
 .user-icon {
   background-color: rgb(236, 236, 236);
   border: 1px solid rgb(212, 208, 200);
