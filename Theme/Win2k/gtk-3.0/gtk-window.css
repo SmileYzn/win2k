@@ -75,11 +75,31 @@ window.ssd > decoration {
       margin: 0px;
       font-weight: bold;
       font-size: 9pt; }
+    /* Muffin paints each button's CSS background over the whole button and draws the
+       window-*-symbolic icon on top. The 16x16 images hold the 16x14 xfwm4 button under two
+       transparent rows (the button area starts 1px above the bar), so they are not scaled (the 18x18 ones used by GTK
+       title bars came out blurred). The button must be exactly 16px: Muffin adds the
+       button's border and padding to it. It also puts a fixed 6px between buttons and
+       counts the decoration's right edge twice, so the -2px/-4px side margins (one value
+       for every button) bring the buttons together and leave close 2px from the frame,
+       as in xfwm4; close cannot get its own gap. */
     window.ssd > decoration > headerbar.default-decoration button.titlebutton {
       min-width: 16px;
       min-height: 14px;
-      margin-top: 1px;
-      margin-bottom: 1px; }
+      margin: 1px -4px 1px -2px;
+      padding: 0px;
+      border: none;
+      box-shadow: none;
+      background-color: transparent;
+      background-image: url("buttons/ssd_button_normal.png");
+      background-size: 16px 16px;
+      background-position: center;
+      background-repeat: no-repeat; }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton:active {
+        background-image: url("buttons/ssd_button_pressed.png"); }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton image {
+        margin: 0px;
+        padding: 0px; }
   /* Maximized and tiled windows have no frame, as in Windows 2000. */
   window.ssd.maximized > decoration,
   window.ssd.tiled > decoration {
