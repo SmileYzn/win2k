@@ -1141,11 +1141,16 @@ def gui_main():
     win.connect("destroy", Gtk.main_quit)
     # Encerrar por sinal (Ctrl+C, kill) também sai pelo laço do GTK, para o atexit
     # apagar a pasta temporária do tema.
+    # GLibUnix.signal_add só existe no GLib 2.84+; em versões anteriores o módulo GLibUnix
+    # pode existir sem ela (Debian/Ubuntu), e o nome antigo é GLib.unix_signal_add.
+    signal_add = None
     try:
         gi.require_version("GLibUnix", "2.0")
         from gi.repository import GLibUnix
-        signal_add = GLibUnix.signal_add
+        signal_add = getattr(GLibUnix, "signal_add", None)
     except (ValueError, ImportError):      # PyGObject antigo
+        pass
+    if signal_add is None:
         signal_add = GLib.unix_signal_add
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal_add(GLib.PRIORITY_DEFAULT, sig, Gtk.main_quit)
