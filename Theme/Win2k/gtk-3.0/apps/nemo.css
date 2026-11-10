@@ -18,6 +18,14 @@
   min-height: 16px;
   margin-top: 2px;
   margin-bottom: 2px; }
+/* Toolbar buttons (Back, Forward, Up, the view buttons and the location toggle, all
+   flat image buttons in a box of a tool item): square, as tall as the 23px toolbar row
+   (with no padding, the 16px icon left them 18px wide). The path bar sits in a stack
+   inside its tool item and keeps its own buttons. */
+.nemo-window toolbar.primary-toolbar > toolitem > box > button.image-button {
+  min-width: 21px;
+  padding-left: 0px;
+  padding-right: 0px; }
 .nemo-window .toolbar .toggle,
 .nemo-window .toolbar .image-button {
   border: 1px solid transparent;
