@@ -1,0 +1,33 @@
+/**********************
+ * Cinnamon Settings *
+ **********************/
+
+/*Contributor notes:
+Please use two space indentions.
+Stack all related and child selectors and selector states into a logical hierarchy to a readable degree.
+Make sure that all changes made here are part of the Cinnamon Settings application (cinnamon-settings).
+*/
+
+/* Main page: closer to the icon area of the Windows 2000 Control Panel. The page is a
+   scrolled window (.cs-category-view) holding, for each category, a title (icon and 12pt
+   label set by the program), an icon view and a separator before the next category. One
+   white background for the whole page instead of grey title bands between white boxes,
+   inside the sunken frame of an Explorer window (as the Thunar file view), plain bold
+   titles and no separators. Icon size and spacing are set by the program. The inner box
+   must keep no background: with one, its 10px border area showed black. */
+scrolledwindow.cs-category-view {
+  border: 2px solid @border_dark;
+  border-image: url("../assets/frame_inset.png");
+  border-image-slice: 2 2 2 2;
+  background-color: @base_color; }
+  scrolledwindow.cs-category-view > viewport {
+    background-color: @base_color; }
+  scrolledwindow.cs-category-view > viewport > box > box > label {
+    font-weight: bold;
+    color: @text_color; }
+  scrolledwindow.cs-category-view > viewport > box > separator {
+    min-height: 0px;
+    border: none;
+    background: none; }
+  scrolledwindow.cs-category-view iconview {
+    background-color: @base_color; }
