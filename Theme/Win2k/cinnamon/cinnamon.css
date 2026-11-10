@@ -286,10 +286,11 @@ StScrollBar StButton#hhandle {
 /* Right zone of a horizontal panel (tray icons and clock): the thin sunken frame of the
    Windows 2000 notification area, as the clock of the XFCE panel. Cinnamon ignores
    per-side border colours and smooths a stretched border-image, so the white bottom and
-   right edges are an inset shadow inside a border that only has a top and a left side. */
+   right edges are an inset shadow inside a border that only has a top and a left side.
+   The top margin lines the frame up with the Start and taskbar buttons. */
 .panel-bottom #panelRight,
 .panel-top #panelRight {
-  margin: 2px 2px 2px 0px;
+  margin: 3px 2px 2px 0px;
   padding: 0px 3px;
   border-image: none;
   border: 0px solid #808080;
@@ -776,7 +777,114 @@ StScrollBar StButton#hhandle {
   background-color: #D4D0C8; }
 
 /* ===================================================================
- * Modal dialogs (modalDialog.js)
+ * Dialogs (dialog.js, Cinnamon 6)
+ * ===================================================================*/
+/* Since Cinnamon 6 the modal dialogs (Run, log out/shut down, polkit, keyring, mount) are
+   built by dialog.js with these classes; the .modal-dialog rules below only match older
+   Cinnamon. Drawn as a Windows 2000 window: raised frame, the dialog title as the blue
+   caption bar (MessageDialogContent puts it first, across the full width) and the content
+   on the 3D face. */
+.dialog {
+  border-image: url("background-assets/menu.png") 6;
+  background-color: #D4D0C8;
+  color: black;
+  font-size: 9pt;
+  padding: 3px;
+  min-width: 26em; }
+  .dialog .dialog-content-box {
+    margin: 0 0 14px 0;
+    spacing: 12px; }
+  .dialog .dialog-button-box {
+    padding: 0 10px 10px 10px; }
+  .dialog .dialog-button,
+  .dialog .dialog-button:default,
+  .dialog .dialog-button:destructive-action {
+    min-width: 75px;
+    height: 23px;
+    padding: 0 12px;
+    color: black;
+    font-weight: normal;
+    border-image: url("button-assets/button.png") 6; }
+  /* Default and focused button: the extra black outline of Windows 2000. The buttons
+     stretch to equal widths: the button box is homogeneous and St ignores max-width. */
+  .dialog .dialog-button:default,
+  .dialog .dialog-button:focus {
+    border-image: url("button-assets/button-focus.png") 6; }
+  .dialog .dialog-button:active,
+  .dialog .dialog-button:checked {
+    border-image: url("button-assets/button-pressed.png") 6; }
+  .dialog .dialog-button:insensitive {
+    color: #808080;
+    text-shadow: 1px 1px #ffffff; }
+
+.message-dialog-content {
+  spacing: 10px; }
+  .message-dialog-content .message-dialog-title {
+    background-gradient-direction: horizontal;
+    background-gradient-start: #0A246A;
+    background-gradient-end: #A6CAF0;
+    color: white;
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: left;
+    padding: 3px 4px; }
+  .message-dialog-content .message-dialog-description,
+  .message-dialog-content .message-dialog-caption {
+    margin: 0 10px;
+    text-align: left; }
+
+.dialog-list {
+  spacing: 6px;
+  margin: 0 10px; }
+  .dialog-list .dialog-list-title {
+    text-align: left; }
+  .dialog-list .dialog-list-scrollview {
+    max-height: 200px; }
+  .dialog-list .dialog-list-box {
+    spacing: 0;
+    padding: 2px;
+    background-color: white;
+    border-image: url("misc-assets/entry.png") 6; }
+    .dialog-list .dialog-list-box .dialog-list-item {
+      spacing: 6px;
+      padding: 2px 4px; }
+      .dialog-list .dialog-list-box .dialog-list-item:hover,
+      .dialog-list .dialog-list-box .dialog-list-item:selected {
+        background-color: #0A246A;
+        color: white; }
+      .dialog-list .dialog-list-box .dialog-list-item .dialog-list-item-title {
+        font-weight: bold; }
+
+.end-session-dialog {
+  min-width: 30em; }
+  .end-session-dialog .dialog-list .dialog-list-title {
+    color: black;
+    background-color: transparent;
+    padding: 0; }
+
+.prompt-dialog {
+  width: 26em; }
+  .prompt-dialog-password-layout,
+  .polkit-dialog-user-layout {
+    margin: 0 10px;
+    spacing: 6px; }
+  .prompt-dialog-password-entry {
+    padding: 3px;
+    color: black;
+    background-color: white;
+    border-image: url("misc-assets/entry.png") 6;
+    caret-color: black;
+    selected-color: #ffffff;
+    selection-background-color: #0A246A; }
+  .prompt-dialog-error-label,
+  .prompt-dialog-info-label,
+  .prompt-dialog-null-label {
+    margin: 0 10px; }
+  .prompt-dialog-error-label {
+    color: #800000; }
+
+/* ===================================================================
+ * Modal dialogs (modalDialog.js, Cinnamon 5 and older)
  * ===================================================================*/
 .modal-dialog {
   font-size: 10pt;
@@ -828,29 +936,41 @@ StScrollBar StButton#hhandle {
   padding-top: 15px;
   spacing: 5px; }
 
+/* Cinnamon 6: .run-dialog is on the .dialog window above; the title, entry, completion
+   and description sit in its MessageDialogContent. Entry sunken as a Windows 2000 text box. */
 .run-dialog-entry,
 .run-dialog-entry:focus {
-  padding: 2px;
+  margin: 0 10px;
+  padding: 3px;
   color: black;
-  border: 1px solid #808080;
+  border: none;
   background-color: white;
+  border-image: url("misc-assets/entry.png") 6;
   caret-color: black;
   caret-size: 1px;
-  width: 250px;
   height: 16px;
-  transition-duration: 300;
   selected-color: #ffffff;
   selection-background-color: #0A246A; }
 
 .run-dialog-completion-box {
-  padding-left: 15px;
-  font-size: 10px; }
+  margin: 0 10px;
+  font-size: 8pt; }
 
+/* Fixed width, so a long error message wraps instead of widening the window. */
 .run-dialog {
-  padding-right: 12px;
-  padding-left: 12px;
-  padding-bottom: 0;
-  padding-top: 20px; }
+  width: 360px;
+  min-width: 0; }
+  .run-dialog .dialog-content-box {
+    margin: 0; }
+  .run-dialog .dialog-button-box {
+    padding: 0; }
+
+.run-dialog-description {
+  margin: 0 10px 8px 10px;
+  color: black;
+  text-align: left; }
+  .run-dialog-description.error {
+    color: #800000; }
 
 /* This can shade the background when the run dialog box is active. */
 .lightbox {
@@ -989,6 +1109,7 @@ StScrollBar StButton#hhandle {
 .menu-favorites-button {
   padding: 4px; }
   .menu-favorites-button:hover {
+    color: white;
     background-color: #0A246A; }
 
 .menu-categories-box {
@@ -1074,8 +1195,11 @@ StScrollBar StButton#hhandle {
 /* ===================================================================
  * Window list applet (window-list@cinnamon.org/applet.js)
  * ===================================================================*/
+/* Windows 2000 taskbar buttons are 3px apart: the task-*.png images keep 2px of
+   transparent edge on the left and 1px on the right (the panel button images have 2px on
+   each side), with no spacing. */
 .window-list-box {
-  spacing: 3px;
+  spacing: 0px;
   padding-left: 0px; }
 
 .window-list-box.vertical {
@@ -1087,14 +1211,17 @@ StScrollBar StButton#hhandle {
     padding-top: 4px;
     padding-bottom: 4px; }
 
+/* margin-top: the button images start 2px below the top of the box, which put them 1px
+   below the white top edge of the panel; Windows 2000 leaves 2px (as the Start button). */
 .panel-top .window-list-item-box,
 .panel-bottom .window-list-item-box {
+  margin-top: 1px;
   font-weight: normal;
   color: black;
   padding-top: 1px;
   padding-left: 8px;
   padding-right: 4px;
-  border-image: url("panel-assets/button.png") 6; }
+  border-image: url("panel-assets/task-button.png") 6; }
   .panel-left .window-list-item-box,
   .panel-right .window-list-item-box {
     border-image: url("panel-assets/button.png") 6; }
@@ -1112,6 +1239,17 @@ StScrollBar StButton#hhandle {
 
 .window-list-item-demands-attention {
   border-image: url("panel-assets/button_attention.png") 6; }
+
+.panel-top .window-list-item-box:active,
+.panel-top .window-list-item-box:checked,
+.panel-top .window-list-item-box:focus,
+.panel-bottom .window-list-item-box:active,
+.panel-bottom .window-list-item-box:checked,
+.panel-bottom .window-list-item-box:focus {
+  border-image: url("panel-assets/task-pressed.png") 6; }
+.panel-top .window-list-item-demands-attention,
+.panel-bottom .window-list-item-demands-attention {
+  border-image: url("panel-assets/task-attention.png") 6; }
 
 .window-list-preview {
   border-image: url("background-assets/menu.png") 6;
@@ -1353,9 +1491,10 @@ StScrollBar StButton#hhandle {
 /* ===================================================================
  * Panel Launchers applet (panel-launchers@cinnamon.org/applet.js)
  * ===================================================================*/
+/* The 7px spacing makes the gap between two icons (3px of icon padding on each side plus
+   the spacing) the 13px left at the ends of the applet, next to the separator grip. */
 .panel-launchers {
-  spacing: 0px;
-}
+  spacing: 7px; }
 
 /* Quick Launch buttons, as in Windows 2000: flat, with a thin raised edge under the pointer
    (Cinnamon does not mark a launcher as pressed, so there is no sunken state). The launcher
@@ -1424,6 +1563,7 @@ StScrollBar StButton#hhandle {
 .classic-menu-fredcw-applet.applet-box,
 .configurable-menu-johndoe8771-applet.applet-box {
   border-image: url("panel-assets/button.png") 6;
+  margin-top: 1px;
   padding-left: 6px;
   padding-right: 6px; }
   .menu-cinnamon-org-applet.applet-box:hover,
@@ -1473,6 +1613,17 @@ StScrollBar StButton#hhandle {
   .applet-box:checked,
   .applet-box:active {
     border-image: url("panel-assets/pressed.png") 6; } 
+
+/* Notification area (right zone of a horizontal panel): Windows 2000 tray icons and the
+   clock have no hover frame, so the raised frame of .applet-box:hover and the Quick Launch
+   edge of the XApp status icons are not drawn there. */
+.panel-bottom #panelRight .applet-box:hover,
+.panel-top #panelRight .applet-box:hover {
+  border-image: none; }
+  .panel-bottom #panelRight .xapp-status-cinnamon-org-applet .applet-box:hover StIcon,
+  .panel-top #panelRight .xapp-status-cinnamon-org-applet .applet-box:hover StIcon {
+    border-color: transparent;
+    box-shadow: none; }
 
 .applet-box:highlight {
   background-color: #0A246A;
