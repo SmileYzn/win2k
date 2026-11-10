@@ -62,7 +62,10 @@ window.ssd > decoration {
   border-image-slice: 2 2 2 2;
   border-radius: 0px;
   box-shadow: none; }
-  window.ssd > decoration > headerbar.default-decoration {
+  /* :backdrop too: "window.ssd .titlebar:backdrop" above is more specific and would drop
+     the 2px right padding of inactive windows, moving their buttons 2px to the right. */
+  window.ssd > decoration > headerbar.default-decoration,
+  window.ssd > decoration > headerbar.default-decoration:backdrop {
     min-height: 18px;
     padding: 0px 2px 0px 0px;
     margin: 0px;
@@ -76,27 +79,60 @@ window.ssd > decoration {
       font-weight: bold;
       font-size: 9pt; }
     /* Muffin paints each button's CSS background over the whole button and draws the
-       window-*-symbolic icon on top. The 16x16 images hold the 16x14 xfwm4 button under two
-       transparent rows (the button area starts 1px above the bar), so they are not scaled (the 18x18 ones used by GTK
-       title bars came out blurred). The button must be exactly 16px: Muffin adds the
-       button's border and padding to it. It also puts a fixed 6px between buttons and
-       counts the decoration's right edge twice, so the -2px/-4px side margins (one value
-       for every button) bring the buttons together and leave close 2px from the frame,
-       as in xfwm4; close cannot get its own gap. */
+       window-*-symbolic icon on top, centred in a 16px area it does not let the theme move.
+       That icon sat 1px too high, so it is made transparent and the 16x16 images carry the
+       xfwm4 button with its glyph (same pixels as xfwm4/*.xpm) under two transparent rows.
+       They are not scaled (the 18x18 ones used by GTK title bars came out blurred). Muffin
+       sizes a button as its 16px icon plus border, padding and margin and centres it in the
+       bar: 1px of top padding and margin, with the image 1px down, puts the 14px button 2px
+       below the top of the 18px bar and 2px above its bottom, as in xfwm4. Muffin also puts
+       a fixed 6px between buttons and counts the decoration's right edge twice, so the
+       -2px/-4px side margins (one value for every button) bring the buttons together and
+       leave close 2px from the frame, as in xfwm4; close cannot get its own gap. */
     window.ssd > decoration > headerbar.default-decoration button.titlebutton {
       min-width: 16px;
       min-height: 14px;
-      margin: 1px -4px 1px -2px;
-      padding: 0px;
+      margin: 1px -4px 0px -2px;
+      padding: 1px 0px 0px 0px;
       border: none;
       box-shadow: none;
       background-color: transparent;
       background-image: url("buttons/ssd_button_normal.png");
       background-size: 16px 16px;
-      background-position: center;
+      background-position: 0px 1px;
       background-repeat: no-repeat; }
       window.ssd > decoration > headerbar.default-decoration button.titlebutton:active {
         background-image: url("buttons/ssd_button_pressed.png"); }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.close {
+        background-image: url("buttons/ssd_close.png"); }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.close:active {
+        background-image: url("buttons/ssd_close_pressed.png"); }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.maximize {
+        background-image: url("buttons/ssd_maximize.png"); }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.maximize:active {
+        background-image: url("buttons/ssd_maximize_pressed.png"); }
+      window.ssd.maximized > decoration > headerbar.default-decoration button.titlebutton.maximize {
+        background-image: url("buttons/ssd_restore.png"); }
+      window.ssd.maximized > decoration > headerbar.default-decoration button.titlebutton.maximize:active {
+        background-image: url("buttons/ssd_restore_pressed.png"); }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.minimize {
+        background-image: url("buttons/ssd_minimize.png"); }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.minimize:active {
+        background-image: url("buttons/ssd_minimize_pressed.png"); }
+      /* The window menu button (the application icon on the left) has no class of its
+         own: Muffin only adds close, maximize and minimize. In Windows 2000 the icon has no
+         button under it. */
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton:not(.close):not(.maximize):not(.minimize),
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton:not(.close):not(.maximize):not(.minimize):active {
+        background-image: none; }
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.close,
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.maximize,
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.minimize,
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.close image,
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.maximize image,
+      window.ssd > decoration > headerbar.default-decoration button.titlebutton.minimize image {
+        color: transparent;
+        -gtk-icon-shadow: none; }
       window.ssd > decoration > headerbar.default-decoration button.titlebutton image {
         margin: 0px;
         padding: 0px; }
@@ -106,10 +142,17 @@ window.ssd > decoration {
     padding: 0px;
     border: none;
     border-image: none; }
+    /* Without the frame, the side padding keeps the icon 2px from the left edge and close
+       2px from the right edge, as in a maximized Windows 2000 window, and the buttons sit
+       1px higher in the bar (Muffin places them lower when the bar has no top border). */
     window.ssd.maximized > decoration > headerbar.default-decoration,
     window.ssd.tiled > decoration > headerbar.default-decoration {
+      padding: 0px 6px 0px 4px;
       border: none;
       border-image: none; }
+      window.ssd.maximized > decoration > headerbar.default-decoration button.titlebutton,
+      window.ssd.tiled > decoration > headerbar.default-decoration button.titlebutton {
+        background-position: 0px 0px; }
 
 window.csd tooltip {
   border-radius: 0;
