@@ -15,7 +15,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 | Pasta | Conteúdo |
 |---|---|
 | `Theme/Win2k` | `gtk-2.0`, `gtk-3.0` (+ links `gtk-3.22`, `gtk-3.24`), `gtk-4.0`, `xfwm4`, `xfwm4_hidpi`, `openbox-3`, `metacity-1`, `cinnamon`, `gnome-shell`, `xfce-notify-4.0` |
-| `Icon/Win2k` | Pacote de ícones (~32 mil PNGs, ~25 mil links), GPL-2.0 (`Icon/Win2k/LICENSE`). `icones.html` é gerado por `tools/icon-gallery.py`. Sincronizado com o SE98 (github.com/nestoris/Win98SE, pasta `SE98`) até o commit `a837b57a`: na próxima sincronização, aplicar `git diff a837b57a HEAD -- SE98` com `git apply -p2 --directory=Icon/Win2k` |
+| `Icon/Win2k` | Pacote de ícones (~32 mil PNGs, ~25 mil links), GPL-2.0 (`Icon/Win2k/LICENSE`). `icones.html` é gerado por `tools/icon-gallery.py`. Sincronizado com o SE98 (github.com/nestoris/Win98SE, pasta `SE98`) até o commit `a837b57a`: na próxima sincronização, aplicar `git diff a837b57a HEAD -- SE98` com `git apply -p2 --directory=Icon/Win2k` e depois rodar `tools/xsi-links.py` |
 | `Cursor/Win2k_Cursors` | Cursores |
 | `Sound/Win2k` | Tema de sons freedesktop (`stereo/*.wav`) + `win2k-logon-sound.desktop` (autostart) |
 | `Wallpaper/Win2k` | Papéis de parede |
@@ -23,7 +23,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 | `Panel/win2k.tar.bz2` | Perfil do xfce4-panel-profiles |
 | `Panel/mate-win2k.dconf` | Painel do MATE (dconf de `/org/mate/panel/`, sem `history-mate-run`, posições presas à direita) |
 | `Setup` | `win2k-installer.py` (assistente + CLI) e imagens do assistente |
-| `tools` | `win2k-sounds.py` (testador de sons), `icon-gallery.py` |
+| `tools` | `win2k-sounds.py` (testador de sons), `icon-gallery.py`, `xsi-links.py` (links `xsi-*` do xapp-symbolic-icons; gera `xsi-faltantes.md`) |
 | `Screenshots` | Capturas usadas no README |
 
 ## Instalador (`Setup/win2k-installer.py`)
@@ -38,6 +38,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 
 ## Armadilhas conhecidas
 
+- **Ícones `xsi-*`** (xapp-symbolic-icons, usados pelo Cinnamon, Nemo, Xed e XApps): são links gerados por `tools/xsi-links.py --xsi <clone do xapp-symbolic-icons>`, a partir da tabela `icons/xsi-adwaita-symbolic.info` do XSI e da tabela `MANUAL` do script. Não editar à mão: rodar o script de novo (ele apaga e refaz todos os links `xsi-*`) depois de sincronizar com o SE98 ou de atualizar o XSI. Cada link fica na pasta do ícone de destino e só é criado se ele existir (o PR #51 do Win98SE foi revertido por links quebrados).
 - **Apps libadwaita/GTK 4** só leem o tema em `~/.config/gtk-4.0`. Depois de mexer em `gtk-4.0`, sincronizar com `cp -r Theme/Win2k/gtk-4.0/. ~/.config/gtk-4.0/`. O instalador faz isso ao aplicar o tema.
 - **gtk-4.0 é independente**: os assets ficam em `gtk-4.0/assets` (não referenciar `../gtk-3.0`).
 - **Menus de contexto** herdam o CSS do widget que os abre (fonte monoespaçada do editor). Por isso existe `font: initial` em `menu`/`.context-menu` (GTK 3) e em `popover.background` (GTK 4).
