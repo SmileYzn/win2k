@@ -27,6 +27,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 THEME = ROOT / "Icon/Win2k"
 REPORT = ROOT / "tools/xsi-faltantes.md"
+# Links "-symbolic" criados pelo script (fora os xsi-* e APP_ICONS), para apagá-los ao rodar
+# de novo sem tocar nos "-symbolic" que vieram do SE98.
+SYMBOLIC_MANIFEST = ROOT / "tools/symbolic-links.txt"
 EXTS = (".png", ".svg", ".xpm")
 
 # Nomes XSI usados pelo Cinnamon que não têm equivalente pela tabela do XSI: sufixo XSI
@@ -77,6 +80,14 @@ APP_ICONS = {
     # categoria "Todos os aplicativos", como a pasta Programas do menu Iniciar
     "cinnamon-all-applications": "applications-all",
     "cinnamon-all-applications-symbolic": "applications-all",
+    # Applet de notificações (notifications@cinnamon.org, ícones simbólicos próprios):
+    # sino parado sem notificações, tocando com notificações e, nas críticas, o applet
+    # pisca entre "critical" e "alt-critical"
+    "empty-notif-symbolic": "notification",
+    "normal-notif-symbolic": "notification-active",
+    "low-notif-symbolic": "notification-active",
+    "critical-notif-symbolic": "emblem-important",
+    "alt-critical-notif-symbolic": "notification-active",
 }
 
 # Onde procurar os nomes "xsi-*" usados pelos programas instalados (para o relatório).
@@ -87,6 +98,18 @@ USED_GLOBS = ["/usr/lib/libnemo*", "/usr/lib/libxapp*", "/usr/lib/cinnamon*",
               "/usr/lib/python3*/site-packages/xapp"]
 # Outro pacote clássico instalado, consultado pelo relatório.
 OTHER_THEMES = {"Chicago95": "/usr/share/icons/Chicago95"}
+
+
+def inherited_names(theme):
+    """Nomes de ícone dos temas herdados (Inherits do index.theme) instalados no sistema."""
+    cp = configparser.ConfigParser(interpolation=None, strict=False)
+    cp.read(theme / "index.theme")
+    names = set()
+    for t in cp["Icon Theme"].get("Inherits", "").split(","):
+        for f in glob.glob(f"/usr/share/icons/{t.strip()}/**/*.*", recursive=True):
+            if f.endswith(EXTS) and os.path.exists(f):
+                names.add(os.path.basename(f).rsplit(".", 1)[0])
+    return names
 
 
 def theme_dirs(theme):
@@ -165,6 +188,11 @@ def main():
     dirs = theme_dirs(THEME)
     ours = set(APP_ICONS) | {n + "-rtl" for n in APP_ICONS}
     removed = 0
+    if SYMBOLIC_MANIFEST.exists():
+        for rel in SYMBOLIC_MANIFEST.read_text().split():
+            if os.path.islink(THEME / rel):
+                os.unlink(THEME / rel)
+                removed += 1
     for d in dirs:
         for f in os.scandir(THEME / d):
             stem = os.path.splitext(f.name)[0]
@@ -195,11 +223,30 @@ def main():
             for d, fname in idx.get(dest, {}).items():
                 os.symlink(fname, THEME / d / (link + os.path.splitext(fname)[1]))
                 app_made += 1
-    print(f"{app_made} links para {len(APP_ICONS)} ícones de programas (Nemo, menus do Cinnamon)")
+    print(f"{app_made} links para {len(APP_ICONS)} ícones de programas (Nemo, menus e notificações do Cinnamon)")
+
+    # Cinnamon (notificações, applets) pede ícones como simbólicos: "battery" vira
+    # "battery-symbolic" e, se o Win2k só tem a versão colorida, o GTK usa o desenho
+    # moderno do Adwaita/breeze antes de aceitá-la. Para esses nomes, "-symbolic" aponta
+    # para o ícone clássico, como os links "-symbolic" que o pacote já tem.
+    inherited = inherited_names(THEME)
+    sym_links = []
+    for name, where in sorted(idx.items()):
+        sym = name + "-symbolic"
+        if name.endswith("-symbolic") or sym in idx or sym not in inherited:
+            continue
+        for d, fname in where.items():
+            rel = f"{d}/{sym}{os.path.splitext(fname)[1]}"
+            os.symlink(fname, THEME / rel)
+            sym_links.append(rel)
+    SYMBOLIC_MANIFEST.write_text("\n".join(sorted(sym_links)) + "\n")
+    print(f"{len(sym_links)} links -symbolic para {len({r.rsplit('/', 1)[1] for r in sym_links})}"
+          " ícones que só tinham versão colorida")
 
     broken = [f.path for d in dirs for f in os.scandir(THEME / d)
               if f.is_symlink() and not os.path.exists(f.path)
-              and (f.name.startswith("xsi-") or os.path.splitext(f.name)[0] in ours)]
+              and (f.name.startswith("xsi-") or os.path.splitext(f.name)[0] in ours
+                   or f"{d}/{f.name}" in sym_links)]
     print(f"{removed} links antigos removidos, {made} criados para {len(mapped)} de "
           f"{len(xsi_names)} ícones XSI; {len(broken)} quebrados")
 
