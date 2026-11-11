@@ -57,6 +57,21 @@ MANUAL = {
 # Ícones que precisam continuar como o XSI os desenha.
 KEEP = {"xsi-empty-icon-symbolic"}
 
+# Ícones próprios de programas, fora do XSI, que também vêm em traço do hicolor: nome
+# completo -> ícone Win2k. As variantes "-rtl" usam o "-rtl" do destino, se houver.
+APP_ICONS = {
+    # Nemo: botão que alterna entre a barra de caminho e o campo de endereço
+    "nemo-location-symbolic": "go-jump",
+    # Nemo, rodapé: barra lateral (o mesmo ícone do botão da barra lateral do Xed),
+    # locais, árvore e painel de visualização
+    "nemo-sidebar-hide-symbolic": "view-dual",
+    "nemo-sidebar-show-symbolic": "view-dual",
+    "nemo-sidebar-places-symbolic": "user-bookmarks",
+    "nemo-sidebar-tree-symbolic": "view-list-tree",
+    "nemo-preview-show-symbolic": "view-preview",
+    "nemo-preview-hide-symbolic": "view-preview",
+}
+
 # Onde procurar os nomes "xsi-*" usados pelos programas instalados (para o relatório).
 USED_PATHS = ["/usr/share/cinnamon", "/usr/lib/cinnamon-settings-daemon", "/usr/bin/nemo",
               "/usr/share/nemo", "/usr/bin/xed", "/usr/share/xed", "/usr/lib/xed",
@@ -141,11 +156,13 @@ def main():
     args = ap.parse_args()
 
     dirs = theme_dirs(THEME)
+    ours = set(APP_ICONS) | {n + "-rtl" for n in APP_ICONS}
     removed = 0
     for d in dirs:
-        for f in glob.glob(str(THEME / d / "xsi-*")):
-            if os.path.islink(f):
-                os.unlink(f)
+        for f in os.scandir(THEME / d):
+            stem = os.path.splitext(f.name)[0]
+            if f.is_symlink() and (stem.startswith("xsi-") or stem in ours):
+                os.unlink(f.path)
                 removed += 1
 
     idx = index(THEME, dirs)
@@ -163,7 +180,19 @@ def main():
             os.symlink(fname, THEME / d / (name + os.path.splitext(fname)[1]))
             made += 1
 
-    broken = [f for d in dirs for f in glob.glob(str(THEME / d / "xsi-*")) if not os.path.exists(f)]
+    app_made = 0
+    for name, target in APP_ICONS.items():
+        for link, dest in ((name, target), (name + "-rtl", target + "-rtl")):
+            if dest not in idx:
+                dest = target
+            for d, fname in idx.get(dest, {}).items():
+                os.symlink(fname, THEME / d / (link + os.path.splitext(fname)[1]))
+                app_made += 1
+    print(f"{app_made} links para {len(APP_ICONS)} ícones de programas (Nemo)")
+
+    broken = [f.path for d in dirs for f in os.scandir(THEME / d)
+              if f.is_symlink() and not os.path.exists(f.path)
+              and (f.name.startswith("xsi-") or os.path.splitext(f.name)[0] in ours)]
     print(f"{removed} links antigos removidos, {made} criados para {len(mapped)} de "
           f"{len(xsi_names)} ícones XSI; {len(broken)} quebrados")
 
