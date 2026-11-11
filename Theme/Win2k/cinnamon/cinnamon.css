@@ -316,8 +316,7 @@ StScrollBar StButton#hhandle {
   .show-desktop-cinnamon-org-applet StIcon {
     padding: 0px 3px; }
   .show-desktop-cinnamon-org-applet.applet-box:hover StIcon {
-    background-image: url("panel-assets/quicklaunch_hover.png");
-    background-position: center; }
+    background-image: url("panel-assets/quicklaunch_hover.png"); }
   .xapp-status-cinnamon-org-applet .applet-box StIcon {
     padding: 2px 3px 3px 2px;
     border: 0px solid transparent;
@@ -1663,8 +1662,7 @@ StScrollBar StButton#hhandle {
   margin: 0px;
   padding: 0px;
   border-image: none;
-  background-image: url("panel-assets/separator_win2k.png");
-  background-position: center; }
+  background-image: url("panel-assets/separator_win2k.png"); }
   /* The applet's own line (a 1px light line in Cinnamon's default theme) is not used. */
   .separator-cinnamon-org-applet .applet-separator-line {
     width: 0px;
@@ -1917,6 +1915,58 @@ StScrollBar StButton#hhandle {
 .osd-window .level-bar {
   background-color: rgb(172, 205, 138);
 }
+
+/* Cinnamon 6 popups: media keys (volume, brightness, "Unavailable"...), workspace switch
+   and window resize. They have their own classes, so the default theme's dark pill would
+   show; here they are raised 3D-face panels with square corners. The level bar's rounded
+   ends are drawn by barLevel.js (radius = half the bar height), so the bar is kept thin
+   inside a sunken white track. */
+.media-keys-osd,
+.workspace-switch-osd,
+.resize-popup {
+  margin-bottom: 1em;
+  color: black;
+  font-weight: bold;
+  background-color: #D4D0C8;
+  border: none;
+  border-radius: 0px;
+  border-image: url("background-assets/menu.png") 6;
+  box-shadow: none; }
+.media-keys-osd {
+  spacing: 12px;
+  padding: 10px 18px; }
+  .media-keys-osd > * {
+    spacing: 8px; }
+  .media-keys-osd StIcon {
+    icon-size: 32px; }
+  .media-keys-osd .level {
+    min-width: 160px;
+    padding: 2px;
+    border-image: url("misc-assets/entry.png") 6;
+    background-color: white;
+    -barlevel-height: 6px;
+    -barlevel-background-color: white;
+    -barlevel-active-background-color: #0A246A;
+    -barlevel-amplify-color: #800000;
+    -barlevel-amplify-separator-width: 2px; }
+
+.workspace-switch-osd {
+  min-width: 140px;
+  padding: 10px 24px 0px 24px; }
+  .workspace-switch-osd-indicator-box {
+    spacing: 8px; }
+  .workspace-switch-osd-indicator {
+    background-color: #808080;
+    padding: 4px;
+    margin: 10px;
+    border-radius: 0px; }
+    .workspace-switch-osd-indicator:active {
+      background-color: #0A246A;
+      padding: 6px;
+      margin: 8px; }
+
+.resize-popup {
+  padding: 6px 12px; }
 
 /* ===================================================================
  * Snap/Tile Chrome (windowManager.js)
