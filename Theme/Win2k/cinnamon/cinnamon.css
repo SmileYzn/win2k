@@ -1197,6 +1197,119 @@ StScrollBar StButton#hhandle {
 
 .menu-context-menu {}
 
+/* Cinnamon 6 menu (menu@cinnamon.org, appmenu-* classes): the default theme's dark,
+   rounded sidebar and buttons would show through, so every appmenu box and button is
+   redone here as the Windows 2000 Start menu: the 3D face, square corners, the blue
+   selection with white text and raised square system buttons. */
+.appmenu-background .popup-menu-content {
+  padding: 0px; }
+
+.appmenu-main-box {
+  spacing: 0px; }
+
+.appmenu-sidebar {
+  padding: 8px 0px;
+  background-color: #D4D0C8;
+  border-radius: 0px;
+  border: 0px solid #808080;
+  border-right-width: 1px;
+  box-shadow: none; }
+
+.appmenu-sidebar-user-box {
+  color: black; }
+  /* The user name is white in the default theme (for its dark sidebar). Only here: the
+     screen shield uses the same widget on a dark background. */
+  .appmenu-sidebar .user-widget-label {
+    color: black;
+    font-weight: bold;
+    text-align: center; }
+
+.appmenu-sidebar-button {
+  padding: 3px 6px;
+  margin: 0px 4px;
+  spacing: 6px;
+  border-radius: 0px;
+  color: black; }
+  .appmenu-sidebar-button:hover {
+    color: white;
+    background-color: #0A246A;
+    border-color: transparent; }
+
+.appmenu-system-box {
+  spacing: 4px; }
+
+.appmenu-system-button,
+.appmenu-sidebar .appmenu-system-button,
+.appmenu-system-button-shutdown,
+.appmenu-sidebar .appmenu-system-button-shutdown {
+  padding: 5px;
+  border: none;
+  border-radius: 0px;
+  color: black;
+  background-color: #D4D0C8;
+  border-image: url("button-assets/button.png") 6; }
+  .appmenu-system-button:hover,
+  .appmenu-sidebar .appmenu-system-button-lock:hover,
+  .appmenu-sidebar .appmenu-system-button-logout:hover,
+  .appmenu-sidebar .appmenu-system-button-shutdown:hover,
+  .appmenu-system-button-lock:hover,
+  .appmenu-system-button-logout:hover,
+  .appmenu-system-button-shutdown:hover {
+    background-color: #D4D0C8; }
+  .appmenu-system-button:active,
+  .appmenu-sidebar .appmenu-system-button:active {
+    border-image: url("button-assets/button-pressed.png") 6; }
+
+.appmenu-right-box {
+  spacing: 5px;
+  padding: 8px; }
+
+.appmenu-category-button,
+.appmenu-category-button-selected,
+.appmenu-category-button-greyed,
+.appmenu-application-button,
+.appmenu-application-button-selected {
+  padding: 4px;
+  spacing: 4px;
+  border-radius: 0px;
+  color: black; }
+  .appmenu-category-button:hover,
+  .appmenu-category-button-selected,
+  .appmenu-application-button-selected {
+    color: white;
+    background-color: #0A246A; }
+  .appmenu-category-button-greyed {
+    color: #808080;
+    text-shadow: 1px 1px #ffffff;
+    font-style: italic; }
+
+.appmenu-application-button-description {
+  color: #808080; }
+  .appmenu-application-button-selected .appmenu-application-button-description {
+    color: #D4D0C8; }
+
+#appmenu-search-entry {
+  padding: 2px;
+  min-height: 16px;
+  border: none;
+  border-radius: 0px;
+  color: black;
+  background-color: white;
+  border-image: url("misc-assets/entry.png") 6;
+  caret-color: black;
+  selected-color: white;
+  selection-background-color: #0A246A; }
+  #appmenu-search-entry:focus {
+    color: black;
+    background-color: white;
+    border-color: transparent; }
+  #appmenu-search-entry StLabel.hint-text {
+    color: #808080; }
+
+.appmenu-search-entry-icon {
+  icon-size: 1em;
+  color: black; }
+
 /* ===================================================================
  * Window list applet (window-list@cinnamon.org/applet.js)
  * ===================================================================*/
