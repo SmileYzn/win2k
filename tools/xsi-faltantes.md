@@ -1,6 +1,6 @@
 # Ícones XSI sem ícone clássico no Win2k
 
-Gerado por `tools/xsi-links.py` em 11/11/2026, a partir do xapp-symbolic-icons (667 ícones). 500 têm ícone clássico no Win2k; os 166 abaixo continuam com o desenho do XSI (hicolor).
+Gerado por `tools/xsi-links.py` em 11/11/2026, a partir do xapp-symbolic-icons (667 ícones). 502 têm ícone clássico no Win2k; os 164 abaixo continuam com o desenho do XSI (hicolor).
 
 Para cobrir um deles: copiar para `Icon/Win2k` um ícone com um dos nomes da coluna "Nomes equivalentes" (ou acrescentar um mapeamento em `MANUAL` no script) e rodar o script de novo. Antes de copiar de outro projeto, conferir a licença: o pacote Win2k é GPL-2.0 (Icon/Win2k/LICENSE); o Chicago95 é GPL-3.0 (conferir no repositório dele).
 
@@ -18,7 +18,7 @@ Cinnamon, Nemo, Xed e XApps pedem estes nomes.
 | `xsi-text-case-symbolic` | `text-case-symbolic`, `text-case` | — |
 | `xsi-use-regex-symbolic` | `use-regex-symbolic`, `use-regex` | — |
 
-## Demais (161)
+## Demais (159)
 
 | Ícone XSI | Nomes equivalentes | Chicago95 instalado |
 |---|---|---|
@@ -27,8 +27,6 @@ Cinnamon, Nemo, Xed e XApps pedem estes nomes.
 | `xsi-annotations-squiggly-symbolic` | `annotations-squiggly-symbolic`, `annotations-squiggly` | — |
 | `xsi-annotations-text-symbolic` | `annotations-text-symbolic`, `annotations-text` | — |
 | `xsi-appearance-symbolic` | `preferences-desktop-appearance-symbolic`, `preferences-desktop-appearance`, `appearance-symbolic`, `appearance` | — |
-| `xsi-applications-administration-symbolic` | `applications-administration-symbolic`, `applications-administration` | — |
-| `xsi-applications-preferences-symbolic` | `applications-preferences-symbolic`, `applications-preferences` | — |
 | `xsi-applications-webapps-symbolic` | `applications-webapps-symbolic`, `applications-webapps` | — |
 | `xsi-applications-wine-symbolic` | `applications-wine-symbolic`, `applications-wine` | — |
 | `xsi-apps-symbolic` | `preferences-desktop-apps-symbolic`, `preferences-desktop-apps`, `apps-symbolic`, `apps` | — |

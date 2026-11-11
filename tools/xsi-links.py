@@ -53,6 +53,9 @@ MANUAL = {
     "view-left-pane": "view-split-left-right",
     "view-bottom-pane": "view-split-top-bottom",
     "rotation-allowed": "object-rotate-right",
+    # categorias do menu do Cinnamon com ícones simbólicos
+    "applications-preferences": "preferences-desktop",
+    "applications-administration": "applications-system",
 }
 # Ícones que precisam continuar como o XSI os desenha.
 KEEP = {"xsi-empty-icon-symbolic"}
@@ -70,6 +73,10 @@ APP_ICONS = {
     "nemo-sidebar-tree-symbolic": "view-list-tree",
     "nemo-preview-show-symbolic": "view-preview",
     "nemo-preview-hide-symbolic": "view-preview",
+    # Menus do Cinnamon (menu@cinnamon.org, Classic Menu, Configurable Menu, Cinnamenu):
+    # categoria "Todos os aplicativos", como a pasta Programas do menu Iniciar
+    "cinnamon-all-applications": "applications-all",
+    "cinnamon-all-applications-symbolic": "applications-all",
 }
 
 # Onde procurar os nomes "xsi-*" usados pelos programas instalados (para o relatório).
@@ -188,7 +195,7 @@ def main():
             for d, fname in idx.get(dest, {}).items():
                 os.symlink(fname, THEME / d / (link + os.path.splitext(fname)[1]))
                 app_made += 1
-    print(f"{app_made} links para {len(APP_ICONS)} ícones de programas (Nemo)")
+    print(f"{app_made} links para {len(APP_ICONS)} ícones de programas (Nemo, menus do Cinnamon)")
 
     broken = [f.path for d in dirs for f in os.scandir(THEME / d)
               if f.is_symlink() and not os.path.exists(f.path)
