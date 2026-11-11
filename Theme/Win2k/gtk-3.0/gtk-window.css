@@ -54,14 +54,17 @@ window.ssd .titlebar {
    the rest, with no top edge. The title bar height is the largest of its min-height, the
    title text and the buttons (Muffin reserves 16px for a button icon), plus its borders:
    4px frame + 18px bar, as in xfwm4. Muffin always centres the title. */
+/* The left, right and bottom edges of the frame are inset shadows inside the padding, not a
+   border-image: drawn in the border area they showed through on the desktop as a 2px gap
+   between the window and its shadow. The order matters (the last shadow is on top): the
+   outer light column runs down to the inner dark row, as in Windows 2000. */
 window.ssd > decoration {
-  padding: 0px 2px 2px 2px;
-  border: 2px solid @border_dark;
-  border-top-width: 0px;
-  border-image: url("assets/window_decoration.png");
-  border-image-slice: 2 2 2 2;
+  padding: 0px 4px 4px 4px;
+  border: none;
+  border-image: none;
   border-radius: 0px;
-  box-shadow: none; }
+  box-shadow: inset 2px 0px #FFFFFF, inset -2px -2px #808080,
+              inset 1px 0px #D4D0C8, inset -1px -1px #000000; }
   /* :backdrop too: "window.ssd .titlebar:backdrop" above is more specific and would drop
      the 2px right padding of inactive windows, moving their buttons 2px to the right. */
   window.ssd > decoration > headerbar.default-decoration,
@@ -141,7 +144,8 @@ window.ssd > decoration {
   window.ssd.tiled > decoration {
     padding: 0px;
     border: none;
-    border-image: none; }
+    border-image: none;
+    box-shadow: none; }
     /* Without the frame, the side padding keeps the icon 2px from the left edge and close
        2px from the right edge, as in a maximized Windows 2000 window, and the buttons sit
        1px higher in the bar (Muffin places them lower when the bar has no top border). */
