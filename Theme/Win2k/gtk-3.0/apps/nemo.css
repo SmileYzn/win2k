@@ -26,6 +26,12 @@
   min-width: 21px;
   padding-left: 0px;
   padding-right: 0px; }
+/* Status bar buttons (places, tree, sidebar and preview pane; the status bar is a box with
+   the toolbar class): square, as tall as the 24px status bar row. */
+.nemo-window .toolbar > button.image-button {
+  min-width: 22px;
+  padding-left: 0px;
+  padding-right: 0px; }
 .nemo-window .toolbar .toggle,
 .nemo-window .toolbar .image-button {
   border: 1px solid transparent;
