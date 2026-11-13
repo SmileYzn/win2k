@@ -1,0 +1,10 @@
+[Sound Theme]
+Name=Win2k-Utopia
+Name[pt_BR]=Win2k-Utopia
+Comment=Windows 2000 "Utopia Sound Scheme"
+Comment[pt_BR]=Esquema de sons "Utopia" do Windows 2000
+Inherits=Win2k
+Directories=stereo
+
+[stereo]
+OutputProfile=stereo

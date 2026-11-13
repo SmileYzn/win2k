@@ -17,7 +17,7 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 | `Theme/Win2k` | `gtk-2.0`, `gtk-3.0` (+ links `gtk-3.22`, `gtk-3.24`), `gtk-4.0`, `xfwm4`, `xfwm4_hidpi`, `openbox-3`, `metacity-1`, `cinnamon`, `gnome-shell`, `xfce-notify-4.0` |
 | `Icon/Win2k` | Pacote de ícones (~32 mil PNGs, ~25 mil links), GPL-2.0 (`Icon/Win2k/LICENSE`). `icones.html` é gerado por `tools/icon-gallery.py`. Sincronizado com o SE98 (github.com/nestoris/Win98SE, pasta `SE98`) até o commit `a837b57a`: na próxima sincronização, aplicar `git diff a837b57a HEAD -- SE98` com `git apply -p2 --directory=Icon/Win2k` e depois rodar `tools/xsi-links.py` |
 | `Cursor/Win2k_Cursors` | Cursores |
-| `Sound/Win2k` | Tema de sons freedesktop (`stereo/*.wav`) + `win2k-logon-sound.desktop` (autostart) |
+| `Sound/Win2k`, `Sound/Win2k-Utopia` | Temas de sons freedesktop (`stereo/*.wav`): esquemas "Padrão do Windows" e "Utopia" (este herda do Win2k), extraídos de `I386/*.WA_` da instalação do Windows 2000 (mapeamentos em `HIVEDEF.INF` e `MMOPT.INF`). `win2k-logon-sound.desktop`: autostart do som de logon no XFCE e no MATE (o Cinnamon usa `org.cinnamon.sounds`). No instalador, componentes `sounds` e `sounds-utopia` (`SOUND_THEMES`): só um fica ativo (`state.json` → `sounds_applied`) |
 | `Wallpaper/Win2k` | Papéis de parede |
 | `Menu` | `win2k-start.menu` (plugin "Menu de aplicativos"), `applications/`, `desktop-directories/`, `win2k-logoff.py` |
 | `Panel/win2k.tar.bz2` | Perfil do xfce4-panel-profiles |
@@ -64,4 +64,4 @@ Chicago95/SE98. Repositório: https://github.com/SmileYzn/win2k
 
 ## Recursos da Microsoft
 
-Sons, cursores, imagens do Setup (`Setup/*.png`) e faixas do menu foram extraídos de uma ISO do Windows 2000. São da Microsoft. Não acrescentar outros sem avisar o usuário.
+Sons (os dois esquemas), cursores, imagens do Setup (`Setup/*.png`) e faixas do menu foram extraídos de uma ISO do Windows 2000. São da Microsoft. Não acrescentar outros sem avisar o usuário.

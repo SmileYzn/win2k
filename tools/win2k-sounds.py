@@ -5,25 +5,27 @@ Lista os eventos do tema e toca cada um pelo libcanberra (canberra-gtk-play),
 do mesmo jeito que o GTK e o xfce4-notifyd tocam: respeita o tema de sons
 selecionado e a opcao "Habilitar sons de eventos".
 
-Uso: python3 tools/win2k-sounds.py
+Uso: python3 tools/win2k-sounds.py [Win2k|Win2k-Utopia]
 """
 
 import os
 import shutil
+import sys
 
 import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gio, GLib, Gtk  # noqa: E402
 
-THEME = "Win2k"
+# Tema a testar: "Win2k" (esquema Padrão do Windows, o padrão) ou "Win2k-Utopia".
+THEME = sys.argv[1] if len(sys.argv) > 1 else "Win2k"
 THEME_DIRS = [
     os.path.join(GLib.get_user_data_dir(), "sounds", THEME),
     *(os.path.join(d, "sounds", THEME) for d in GLib.get_system_data_dirs()),
 ]
 
 # (evento freedesktop, som original do Windows 2000, quando toca no XFCE)
-EVENTS = [
+EVENTS_DEFAULT = [
     ("bell", "Ding (Padrão)", "Bipe do sistema"),
     ("bell-terminal", "Ding (Padrão)", "Bipe do terminal"),
     ("bell-window-system", "Ding (Padrão)", "Bipe de janela"),
@@ -36,10 +38,29 @@ EVENTS = [
     ("desktop-login", "Windows Logon Sound", "Ao entrar no XFCE"),
     ("desktop-logout", "Windows Logoff Sound", "Iniciar > Desligar..."),
 ]
+EVENTS_UTOPIA = [
+    ("bell", "Utopia Default", "Bipe do sistema"),
+    ("bell-terminal", "Utopia Default", "Bipe do terminal"),
+    ("bell-window-system", "Utopia Default", "Bipe de janela"),
+    ("dialog-error", "Utopia Critical Stop", "Diálogo de erro"),
+    ("dialog-warning", "Utopia Exclamation", "Diálogo de aviso"),
+    ("dialog-question", "Utopia Question", "Diálogo de pergunta"),
+    ("dialog-information", "Utopia Asterisk", "Diálogo de informação"),
+    ("trash-empty", "Utopia Recycle", "Não é disparado pelo Thunar"),
+    ("window-maximized", "Utopia Maximize", "Maximizar janela"),
+    ("window-minimized", "Utopia Minimize", "Minimizar janela"),
+    ("window-unmaximized", "Utopia Restore Down", "Restaurar janela maximizada"),
+    ("window-unminimized", "Utopia Restore Up", "Restaurar janela minimizada"),
+    ("menu-popup", "Utopia Menu Popup", "Abrir menu"),
+    ("menu-click", "Utopia Menu Command", "Escolher item de menu"),
+    ("desktop-login", "Utopia Windows Start", "Ao entrar na sessão"),
+    ("desktop-logout", "Utopia Windows Exit", "Ao sair da sessão"),
+]
+EVENTS = EVENTS_UTOPIA if THEME == "Win2k-Utopia" else EVENTS_DEFAULT
 
 
 def theme_file(event):
-    """Caminho do som no tema Win2k instalado, ou None."""
+    """Caminho do som no tema testado (instalado), ou None."""
     for d in THEME_DIRS:
         for ext in ("wav", "oga", "ogg"):
             path = os.path.join(d, "stereo", f"{event}.{ext}")

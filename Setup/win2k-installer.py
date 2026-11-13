@@ -15,8 +15,8 @@ Modos:
   - "Sistema" (--system): copia para /usr/share e /etc/xdg. Só a cópia roda como root,
     com o próprio script chamado de novo pelo pkexec (--root); a janela nunca roda como root.
 
-"Aplicar" ativa cada parte no XFCE (xfconf-query) e no Cinnamon (gsettings), conforme o que
-estiver instalado. Os valores anteriores ficam guardados em ~/.local/share/win2k-installer e
+"Aplicar" ativa cada parte no XFCE (xfconf-query), no Cinnamon (gsettings) e, para os sons,
+no MATE (gsettings), conforme o que estiver instalado. Os valores anteriores ficam guardados em ~/.local/share/win2k-installer e
 voltam ao desinstalar. O componente "terminal" grava da
 mesma forma as cores do MATE Terminal (dconf) e do Xfce Terminal (xfconf).
 """
@@ -74,12 +74,23 @@ COMPONENTS = {
             "user": [("Cursor/Win2k_Cursors", "~/.icons/Win2k_Cursors")],
         },
     },
+    # Os dois esquemas de sons do Windows 2000. Só um fica ativo (veja SOUND_THEMES); o
+    # .desktop do som de logon é dos dois e só sai quando nenhum continua instalado.
     "sounds": {
-        "label": "Sons (e som de logon)",
+        "label": "Sons: esquema Padrão do Windows (e som de logon)",
         "files": {
             "system": [("Sound/Win2k", "/usr/share/sounds/Win2k"),
                        ("Sound/win2k-logon-sound.desktop", "/etc/xdg/autostart/win2k-logon-sound.desktop")],
             "user": [("Sound/Win2k", "~/.local/share/sounds/Win2k"),
+                     ("Sound/win2k-logon-sound.desktop", "~/.config/autostart/win2k-logon-sound.desktop")],
+        },
+    },
+    "sounds-utopia": {
+        "label": "Sons: esquema Utopia (e som de logon)",
+        "files": {
+            "system": [("Sound/Win2k-Utopia", "/usr/share/sounds/Win2k-Utopia"),
+                       ("Sound/win2k-logon-sound.desktop", "/etc/xdg/autostart/win2k-logon-sound.desktop")],
+            "user": [("Sound/Win2k-Utopia", "~/.local/share/sounds/Win2k-Utopia"),
                      ("Sound/win2k-logon-sound.desktop", "~/.config/autostart/win2k-logon-sound.desktop")],
         },
     },
@@ -115,7 +126,9 @@ COMPONENTS = {
 }
 FILE_COMPONENTS = [c for c in COMPONENTS if COMPONENTS[c]["files"]["user"]]
 SETTINGS_ONLY = [c for c in COMPONENTS if c not in FILE_COMPONENTS]   # sempre aplicados
-DEFAULT_OFF = {"panel", "mate-panel", "terminal"}
+DEFAULT_OFF = {"panel", "mate-panel", "terminal", "sounds-utopia"}
+# Componente de sons -> nome do tema de sons freedesktop que ele instala.
+SOUND_THEMES = {"sounds": "Win2k", "sounds-utopia": "Win2k-Utopia"}
 
 # Tema de cores do prompt do MS-DOS no Windows 2000: cinza sobre preto, as 16 cores do console
 # e cursor sublinhado piscando.
@@ -200,8 +213,20 @@ def fix_menu_paths(new_dir, final_dir):
             f.write_text(text.replace(MENU_SYSTEM_PATH, str(final_dir)))
 
 
+def shared_with(comp, dest, mode):
+    """Outro componente instalado que também usa o arquivo dest (o .desktop do som de logon)."""
+    for other, info in COMPONENTS.items():
+        if other != comp and any(d == dest for _, d in info["files"][mode]) and installed_in(other, mode):
+            return other
+    return None
+
+
 def remove_files(comp, mode, log):
     for src_rel, dest in COMPONENTS[comp]["files"][mode]:
+        other = shared_with(comp, dest, mode)
+        if other:
+            log(f"  {dest_path(dest)} mantido (usado por {COMPONENTS[other]['label']})")
+            continue
         dest = dest_path(dest)
         if dest.is_dir() and not dest.is_symlink():
             shutil.rmtree(dest)
@@ -251,6 +276,11 @@ def have_mate_panel():
     return shutil.which("mate-panel") is not None and shutil.which("dconf") is not None
 
 
+def have_mate():
+    return (shutil.which("mate-session") is not None and shutil.which("gsettings") is not None
+            and run(["gsettings", "list-keys", "org.mate.sound"]).returncode == 0)
+
+
 def have_cinnamon():
     return (shutil.which("cinnamon") is not None and shutil.which("gsettings") is not None
             and run(["gsettings", "list-keys", "org.cinnamon.theme"]).returncode == 0)
@@ -283,11 +313,11 @@ def cinnamon_settings_for(comp, mode):
         return [("org.cinnamon.desktop.interface", "icon-theme", "'Win2k'")]
     if comp == "cursors":
         return [("org.cinnamon.desktop.interface", "cursor-theme", "'Win2k_Cursors'")]
-    if comp == "sounds":
+    if comp in SOUND_THEMES:
         # O Cinnamon toca o logon e o logoff pelas próprias chaves; o .desktop de autostart
-        # do som de logon é só para o XFCE (OnlyShowIn).
-        stereo = dest_path(COMPONENTS["sounds"]["files"][mode][0][1]) / "stereo"
-        return [("org.cinnamon.desktop.sound", "theme-name", "'Win2k'"),
+        # do som de logon é só para o XFCE e o MATE (OnlyShowIn).
+        stereo = dest_path(COMPONENTS[comp]["files"][mode][0][1]) / "stereo"
+        return [("org.cinnamon.desktop.sound", "theme-name", gvariant_str(SOUND_THEMES[comp])),
                 ("org.cinnamon.desktop.sound", "event-sounds", "true"),
                 ("org.cinnamon.sounds", "login-enabled", "true"),
                 ("org.cinnamon.sounds", "login-file", gvariant_str(str(stereo / "desktop-login.wav"))),
@@ -302,16 +332,29 @@ def cinnamon_settings_for(comp, mode):
     return []
 
 
-def apply_cinnamon(comp, mode, previous, log):
-    if comp == "menu":
-        log("  Cinnamon: o botão Iniciar é o applet de menu do painel; nada a aplicar")
-        return
-    for schema, key, value in cinnamon_settings_for(comp, mode):
+def mate_settings_for(comp, mode):
+    """Lista de (esquema, chave, valor em GVariant) que "Aplicar" grava no MATE. O
+    mate-settings-daemon repassa o tema de sons ao GTK (XSETTINGS)."""
+    if comp in SOUND_THEMES:
+        return [("org.mate.sound", "theme-name", gvariant_str(SOUND_THEMES[comp])),
+                ("org.mate.sound", "event-sounds", "true")]
+    return []
+
+
+def apply_gsettings(items, desktop, previous, log):
+    for schema, key, value in items:
         state_key = f"gsettings|{schema} {key}"
         if state_key not in previous:        # só o valor de antes da 1ª aplicação
             previous[state_key] = ["gvariant", gsettings_get(schema, key)]
         gsettings_set(schema, key, value)
-        log(f"  Cinnamon: {schema} {key} = {value}")
+        log(f"  {desktop}: {schema} {key} = {value}")
+
+
+def apply_cinnamon(comp, mode, previous, log):
+    if comp == "menu":
+        log("  Cinnamon: o botão Iniciar é o applet de menu do painel; nada a aplicar")
+        return
+    apply_gsettings(cinnamon_settings_for(comp, mode), "Cinnamon", previous, log)
 
 
 def xfconf_get(channel, prop):
@@ -404,8 +447,8 @@ def settings_for(comp, mode):
         return [("xsettings", "/Net/IconThemeName", "string", "Win2k")]
     if comp == "cursors":
         return [("xsettings", "/Gtk/CursorThemeName", "string", "Win2k_Cursors")]
-    if comp == "sounds":
-        return [("xsettings", "/Net/SoundThemeName", "string", "Win2k"),
+    if comp in SOUND_THEMES:
+        return [("xsettings", "/Net/SoundThemeName", "string", SOUND_THEMES[comp]),
                 ("xsettings", "/Net/EnableEventSounds", "bool", "true")]
     if comp == "wallpaper":
         folder = dest_path(COMPONENTS["wallpaper"]["files"][mode][0][1])
@@ -484,7 +527,10 @@ def apply_component(comp, mode, state, log):
                 log("  nem o MATE Terminal nem o Xfce Terminal estão instalados; nada a aplicar")
             return
 
+    if comp in SOUND_THEMES:
+        state["sounds_applied"] = comp        # o esquema ativo é o que a remoção desfaz
     xfce, cinnamon = have_xfce(), have_cinnamon()
+    mate = comp in SOUND_THEMES and have_mate()
     items = []
     if xfce:
         items = settings_for(comp, mode)
@@ -492,7 +538,7 @@ def apply_component(comp, mode, state, log):
             log("  nenhuma área de trabalho encontrada no xfdesktop; aplique o papel de parede à mão")
         if comp == "menu" and not items:
             log("  o painel não tem o plugin \"Menu de aplicativos\"; nada a apontar")
-    elif not cinnamon and comp != "terminal":
+    elif not cinnamon and not mate and comp != "terminal":
         log("  nem o XFCE (xfconf-query) nem o Cinnamon (gsettings) foram encontrados;"
             " ative o componente nas configurações da sua área de trabalho")
     for channel, prop, kind, value in items:
@@ -505,6 +551,8 @@ def apply_component(comp, mode, state, log):
         return
     if cinnamon:
         apply_cinnamon(comp, mode, previous, log)
+    if mate:
+        apply_gsettings(mate_settings_for(comp, mode), "MATE", previous, log)
 
     if comp == "theme":
         # Apps libadwaita (GTK4) só leem o tema em ~/.config/gtk-4.0
@@ -525,8 +573,21 @@ def apply_component(comp, mode, state, log):
                 " apps Java e outros continuarão com esse cursor")
 
 
+SOUND_PREFIXES = ("xsettings|/Net/SoundThemeName", "xsettings|/Net/EnableEventSounds",
+                  "gsettings|org.cinnamon.desktop.sound ", "gsettings|org.cinnamon.sounds ",
+                  "gsettings|org.mate.sound ")
+
+
 def restore_component(comp, state, log):
     previous = state.get("previous", {})
+    if comp in SOUND_THEMES:
+        # Os dois esquemas gravam as mesmas chaves: só a remoção do esquema ativo devolve os
+        # valores de antes (estados antigos, sem "sounds_applied", eram do "sounds").
+        active = state.get("sounds_applied", "sounds")
+        if active != comp:
+            log(f"  o esquema ativo é outro ({COMPONENTS[active]['label']}); nada a restaurar")
+            return
+        state.pop("sounds_applied", None)
     if comp == "panel":
         backup = STATE_DIR / "panel-backup.tar.bz2"
         if backup.exists() and not have_xfce_panel():
@@ -550,8 +611,8 @@ def restore_component(comp, state, log):
         "icons": ("xsettings|/Net/IconThemeName", "gsettings|org.cinnamon.desktop.interface icon-theme"),
         "cursors": ("xsettings|/Gtk/CursorThemeName",
                     "gsettings|org.cinnamon.desktop.interface cursor-theme"),
-        "sounds": ("xsettings|/Net/SoundThemeName", "xsettings|/Net/EnableEventSounds",
-                   "gsettings|org.cinnamon.desktop.sound ", "gsettings|org.cinnamon.sounds "),
+        "sounds": SOUND_PREFIXES,
+        "sounds-utopia": SOUND_PREFIXES,
         "wallpaper": ("xfce4-desktop|", "gsettings|org.cinnamon.desktop.background "),
         "menu": ("xfce4-panel|",),
         "terminal": ("dconf|/org/mate/terminal/", "xfce4-terminal|"),
@@ -632,6 +693,9 @@ def do_install(comps, mode, apply, log, progress=lambda f: None):
             done += 1
             progress(done / steps)
 
+    if "sounds" in apply and "sounds-utopia" in apply:
+        log("Os dois esquemas de sons pedem para ser aplicados; aplicando o Padrão do Windows")
+        apply = [c for c in apply if c != "sounds-utopia"]
     state = load_state()
     # O painel antes do menu: o perfil traz o caminho do menu do sistema, que o menu corrige.
     for comp in sorted((c for c in comps if c in apply or c in SETTINGS_ONLY),
@@ -708,7 +772,11 @@ DESCRIPTIONS = {
              "bordas do xfwm4, balões de notificação e painel e menus do Cinnamon.",
     "icons": "Pacote de ícones do Windows 2000 para aplicativos, pastas e ações.",
     "cursors": "Ponteiros do mouse do Windows 2000.",
-    "sounds": "Esquema de sons \"Padrão do Windows\": Ding, Chord, Notify, logon e logoff.",
+    "sounds": "Esquema de sons \"Padrão do Windows\": Ding, Chord, Notify, logon e logoff. "
+              "Aplicado no XFCE, no MATE e no Cinnamon.",
+    "sounds-utopia": "Esquema de sons \"Utopia\" do Windows 2000: também toca ao maximizar, "
+                     "minimizar, restaurar e abrir menus. Aplicado no XFCE, no MATE e no Cinnamon; "
+                     "só um esquema fica ativo.",
     "wallpaper": "Papel de parede do Windows 2000.",
     "menu": "Menu Iniciar clássico com Programas, Documentos, Configurações, Pesquisar, "
             "Executar, Fazer logoff e Desligar.",
@@ -1100,12 +1168,18 @@ def gui_main():
             subtitle.set_text(
                 "Marque os componentes a remover. As configurações anteriores voltam."
                 if removing else
-                "Marque os componentes a instalar. \"Aplicar\" ativa o componente no XFCE "
-                "ou no Cinnamon logo após a cópia.")
+                "Marque os componentes a instalar. \"Aplicar\" ativa o componente no XFCE, "
+                "no MATE ou no Cinnamon logo após a cópia.")
             self.comp_view.get_selection().select_path(Gtk.TreePath.new_first())
 
         def on_toggle(self, _cell, path, col):
             self.store[path][col] = not self.store[path][col]
+            # Só um esquema de sons pode ser aplicado: marcar "Aplicar" num desmarca o outro.
+            comp = self.store[path][5]
+            if col == 2 and self.store[path][col] and comp in SOUND_THEMES:
+                for row in self.store:
+                    if row[5] in SOUND_THEMES and row[5] != comp:
+                        row[2] = False
             self.update_buttons()
 
         def on_select(self, selection):

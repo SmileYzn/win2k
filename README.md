@@ -33,6 +33,7 @@ Os principais ícones do pacote estão em [`Icon/icones.html`](Icon/icones.html)
 | Ícones | `Icon/Win2k` | Pacote de ícones do Windows 2000, baseado no SE98, com nomes extras para apps GTK 4/libadwaita. |
 | Cursores | `Cursor/Win2k_Cursors` | Ponteiros do Windows 2000. |
 | Sons | `Sound/Win2k` | Esquema "Padrão do Windows": Ding, Chord, Notify, Recycle, logon e logoff. |
+| Sons (Utopia) | `Sound/Win2k-Utopia` | Esquema "Utopia" do Windows 2000: também toca ao maximizar, minimizar, restaurar e abrir menus. |
 | Papel de parede | `Wallpaper/Win2k` | Papéis de parede no estilo Windows 2000. |
 | Menu Iniciar | `Menu` | Menu clássico para o plugin "Menu de aplicativos": favoritos, Programas, Documentos (pastas do usuário), Configurações, Pesquisar, Ajuda, Executar, Fazer logoff e Desligar. |
 | Painel do XFCE | `Panel/win2k.tar.bz2` | Barra de tarefas pronta (perfil do xfce4-panel-profiles): botão Iniciar, Inicialização rápida com alça, lista de janelas, área de notificação e relógio. |
@@ -81,12 +82,16 @@ python3 Setup/win2k-installer.py --install icons,sounds      # só alguns compon
 python3 Setup/win2k-installer.py --install all --with-panel  # inclui o painel Windows 2000 do XFCE
 python3 Setup/win2k-installer.py --install mate-panel        # painel Windows 2000 do MATE
 python3 Setup/win2k-installer.py --install terminal          # tema de cores do terminal MS-DOS
+python3 Setup/win2k-installer.py --install sounds-utopia     # esquema de sons Utopia
 python3 Setup/win2k-installer.py --install theme --no-apply  # copia sem ativar
 python3 Setup/win2k-installer.py --uninstall all             # remove e restaura as configurações
 ```
 
-Componentes: `theme`, `icons`, `cursors`, `sounds`, `wallpaper`, `menu`, `panel`, `mate-panel`, `terminal`.
-`panel`, `mate-panel` e `terminal` ficam fora de `all` e precisam ser pedidos pelo nome. Os dois
+Componentes: `theme`, `icons`, `cursors`, `sounds`, `sounds-utopia`, `wallpaper`, `menu`, `panel`,
+`mate-panel`, `terminal`. `sounds-utopia`, `panel`, `mate-panel` e `terminal` ficam fora de `all` e
+precisam ser pedidos pelo nome. Os dois esquemas de sons (`sounds` e `sounds-utopia`) podem ficar
+instalados juntos, mas só um fica ativo: ao aplicar, o tema de sons é trocado no XFCE, no MATE e no
+Cinnamon (os que estiverem instalados), e remover o esquema ativo devolve as configurações de antes. Os dois
 painéis guardam o painel atual antes de trocá-lo e o devolvem ao remover; o do MATE é reiniciado
 sozinho, assim como depois de instalar o tema ou os ícones.
 
@@ -103,8 +108,8 @@ anteriores do XFCE (tema, ícones, cursor, sons, papel de parede, menu, painel e
   valor para `Win2k_Cursors` ou remova a linha e entre de novo na sessão.
 - **Seleção arredondada no Thunar 4.20:** desative o destaque com
   `xfconf-query -c thunar -p /misc-highlighting-enabled -n -t bool -s false`.
-- **Sons:** precisam de "Habilitar sons de eventos" em *Configurações › Aparência ›
-  Configurações*. Para ouvir cada som, rode `python3 tools/win2k-sounds.py`.
+- **Sons:** o instalador liga os sons de eventos ao aplicar um esquema. Para ouvir cada som,
+  rode `python3 tools/win2k-sounds.py` (ou `python3 tools/win2k-sounds.py Win2k-Utopia`).
 - **Apps GTK 4/libadwaita** só usam o tema por `~/.config/gtk-4.0`. O instalador copia o
   tema para lá ao aplicar o componente *Tema*.
 
